@@ -3,4 +3,4 @@ Highly-intuitive interface to create registry machines.
 
 # What is a registry machine ?
 
-![registry machines](/images/ex.png)
+![registry machines](/ex.PNG)
