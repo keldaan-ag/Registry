@@ -1,0 +1,32 @@
+html,body{
+	height: 100%;
+	width: 100%;
+	margin: 0;
+	background: #31302b;
+	font-size: 1.3em;
+	font-family: Helvetica, sans-serif;
+	color: #fff;
+}
+
+h1{
+	color: #4ea6ca;
+	font-size: 2em;
+	font-weight: bolder;
+	text-align: center;
+}
+
+canvas{
+	display: block;
+}
+
+
+#bubble{
+	width:100vw;
+	height: 100vh;
+	background-color: black;
+}
+
+/*
+#ca724e
+#4ea6ca
+*/
