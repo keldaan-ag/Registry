@@ -1,5 +1,5 @@
 import './index.css';
-import { Boot, Main } from './scenes';
+import {  Main } from './scenes';
 
 /**
  * https://photonstorm.github.io/phaser3-docs/Phaser.Types.Core.html#.GameConfig
@@ -11,18 +11,9 @@ const config = {
   // see `.env` and `package.json`
   url: process.env.WEB_APP_HOMEPAGE,
   version: process.env.WEB_APP_VERSION,
-  scene: [Boot, Main],
-  physics: {
-    default: 'arcade',
-    arcade: {
-      gravity: {
-        y: 300,
-      },
-      debug: process.env.NODE_ENV === 'development',
-    },
-  },
+  scene: [Main],
   disableContextMenu: true,
-  backgroundColor: '#000',
+  backgroundColor: '#fff',
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,

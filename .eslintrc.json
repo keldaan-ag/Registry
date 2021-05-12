@@ -1,10 +1,8 @@
 {
   "extends": ["@descriptive/web-app", "@descriptive/web-app/jest"],
-  "plugins": ["prettier"],
   "rules": {
     "no-debugger": "error",
-    "no-console": "error",
-    "prettier/prettier": "error"
+    "no-console": "error"
   },
   "globals": {
     "Phaser": "readonly"
