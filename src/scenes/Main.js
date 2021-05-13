@@ -1,4 +1,5 @@
 import {SCENE_MAIN} from '../constants/index';
+import {Block} from '../gameObjects/index';
 
 class Main extends Phaser.Scene {
   constructor() {
@@ -10,24 +11,21 @@ class Main extends Phaser.Scene {
     //  Stop the right-click from triggering the context menu
     //  You can also set this in the game config
     this.input.mouse.disableContextMenu();
+
+    this.cameras.main.setViewport(0,0,1400,1000);
     
     this.input.on('pointerdown', function (pointer) {
 
       if (pointer.leftButtonDown())
       {
-        let graphics = self.add.graphics();
-
-        var color = 0xff0000;
-        var thickness = 4;
-        var alpha = 1;
-    
-        graphics.lineStyle(thickness, color, alpha);
-    
-        var a = new Phaser.Geom.Point(pointer.x, pointer.y);
-        var radius = 50;
-    
-        graphics.strokeCircle(a.x, a.y, radius);
+        new Block(self, pointer.x, pointer.y, 50, 50);
       }
+    });
+
+    this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
+
+      gameObject.x = dragX;
+      gameObject.y = dragY;
 
     });
 

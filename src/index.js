@@ -5,8 +5,8 @@ import {  Main } from './scenes';
  * https://photonstorm.github.io/phaser3-docs/Phaser.Types.Core.html#.GameConfig
  */
 const config = {
-  width: 800,
-  height: 600,
+  width: 2000,
+  height: 1000,
   title: 'Phaser Template',
   // see `.env` and `package.json`
   url: process.env.WEB_APP_HOMEPAGE,
