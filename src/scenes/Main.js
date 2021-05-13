@@ -1,5 +1,5 @@
 import {SCENE_MAIN} from '../constants/index';
-import {Block} from '../gameObjects/index';
+import {Block, Registry} from '../gameObjects/index';
 
 class Main extends Phaser.Scene {
   constructor() {
@@ -12,7 +12,8 @@ class Main extends Phaser.Scene {
     //  You can also set this in the game config
     this.input.mouse.disableContextMenu();
 
-    this.cameras.main.setViewport(0,0,1400,1000);
+    this.registryInput = new Registry(this,1600,200,300,200,0xff0000);
+    this.registryOutput = new Registry(this,1600,600,300,200,0x00ff00);
     
     this.input.on('pointerdown', function (pointer) {
 
