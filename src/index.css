@@ -1,6 +1,6 @@
 html,
 body {
-  background: #000;
+  background: #fff;
 
   /* reset */
   font-family: 'Lucida Grande', Helvetica, Arial, sans-serif;
@@ -12,6 +12,17 @@ body,
 a {
   color: #fff;
 }
+
+#mynetwork {
+  width: 600px;
+  height: 600px;
+  border: 1px solid lightgray;
+}
+
+#phaser-canvas{
+  border: 1px solid lightgray;
+}
+
 
 /* github-corners */
 .github-corner > svg {

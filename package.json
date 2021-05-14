@@ -17,7 +17,9 @@
   },
   "homepage": "https://remarkablegames.org/phaser-template/",
   "dependencies": {
-    "phaser": "3.52.0"
+    "phaser": "3.52.0",
+    "vis-data": "^7.1.2",
+    "vis-network": "^9.0.4"
   },
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",
