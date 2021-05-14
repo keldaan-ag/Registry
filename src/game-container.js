@@ -27,8 +27,8 @@ class GameContainer{
     
     // create an array with nodes
     var nodes = new DataSet([
-        { id: 1, label: "Start", color: "red"},
-        { id: 2, label: "End", color:"green"}
+        { id: 1, label: "Start", color: { background: "lightblue", border: "blue" }},
+        { id: 2, label: "End", color: { background: "lightblue", border: "blue" }}
     ]);
     
     // create an array with edges
@@ -49,7 +49,9 @@ class GameContainer{
             enabled: false,
             initiallyActive: false,
             addNode: true,
-            addEdge: true,
+            addEdge: function(edgeData,callback) {
+                self.checkEdge(edgeData, callback);
+              },
             editNode: function(nodeData,callback) {
                 nodeData.label = 'hello world';
                 callback(nodeData);
@@ -74,6 +76,25 @@ class GameContainer{
     };
     
     this.network = new Network(container, data, options);
+    this.initListeners();
+    }
+
+    initListeners(){
+        let self = this;
+        document.getElementById('create-new-node').addEventListener('click',(e)=>{
+            self.network.addNodeMode();
+        });
+        document.getElementById('create-new-edge').addEventListener('click',(e)=>{
+            self.network.addEdgeMode();
+        });
+    }
+
+    checkEdge(edgeData,callback){
+        if (edgeData.from === edgeData.to) {
+        }
+        else {
+          callback(edgeData);
+        }
     }
 }
 
