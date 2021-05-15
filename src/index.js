@@ -1,4 +1,4 @@
 import GameContainer from './game-container';
 
-let numberOfBox = 1;
+let numberOfBox = 3;
 window.gameContainer = new GameContainer(numberOfBox);

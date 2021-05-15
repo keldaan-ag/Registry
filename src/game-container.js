@@ -24,18 +24,16 @@ class GameContainer{
     };
 
     window.boxes = new Map();
-    let inputBox = new Box('0','#ff0000', 0xff0000,'red');
-    let outputBox = new Box('1','#00ff00', 0x00ff00,'green');
-    window.boxes.set(inputBox.id, inputBox);
-    window.boxes.set(outputBox.id, outputBox);
-
+    let colors = ['red','green','blue'];
+    let phaserColors = [0xff0000,0x00ff00,0x0000ff];
+    let ids = ['A', 'B', 'C'];
     for (let i = 0; i < numberOfBox; i++) {
-      let box = new Box(`${i+2}`, '#0000ff',0x0000ff,'blue');
+      let box = new Box(ids[i], colors[i],phaserColors[i]);
       window.boxes.set(box.id, box);
     }
     
     this.display = new Phaser.Game(config, this.boxes);
-    this.editor = new NetworkEditor();
+    this.editor = new NetworkEditor(this);
 
     this.fillHTMLSelect();
     this.initListeners();
