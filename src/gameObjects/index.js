@@ -1,1 +1,1 @@
-export { default as Registry } from './Registry';
+export { default as Box } from './Box';

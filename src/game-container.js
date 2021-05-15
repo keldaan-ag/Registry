@@ -1,12 +1,12 @@
 import './index.css';
 import {  Main } from './scenes';
-
-import { DataSet } from "vis-data";
-import { Network } from "vis-network";
 import "vis-network/styles/vis-network.css";
+import NetworkEditor from './network-editor';
+import Box from './Box';
 
 class GameContainer{
-    constructor(){
+    constructor(numberOfBox){
+      let self = this;
         /**
      * https://photonstorm.github.io/phaser3-docs/Phaser.Types.Core.html#.GameConfig
      */
@@ -22,79 +22,46 @@ class GameContainer{
         disableContextMenu: true,
         backgroundColor: '#fff'
     };
-    
-    this.game = new Phaser.Game(config);
-    
-    // create an array with nodes
-    var nodes = new DataSet([
-        { id: 1, label: "Start", color: { background: "lightblue", border: "blue" }},
-        { id: 2, label: "End", color: { background: "lightblue", border: "blue" }}
-    ]);
-    
-    // create an array with edges
-    var edges = new DataSet([
 
-    ]);
+    window.boxes = new Map();
+    let inputBox = new Box('0','#ff0000', 0xff0000,'red');
+    let outputBox = new Box('1','#00ff00', 0x00ff00,'green');
+    window.boxes.set(inputBox.id, inputBox);
+    window.boxes.set(outputBox.id, outputBox);
+
+    for (let i = 0; i < numberOfBox; i++) {
+      let box = new Box(`${i+2}`, '#0000ff',0x0000ff,'blue');
+      window.boxes.set(box.id, box);
+    }
     
-    // create a network
-    var container = document.getElementById("mynetwork");
-    var data = {
-        nodes: nodes,
-        edges: edges,
-    };
-    
-    var options = {
-        interaction: { hover: true },
-        manipulation: {
-            enabled: false,
-            initiallyActive: false,
-            addNode: true,
-            addEdge: function(edgeData,callback) {
-                self.checkEdge(edgeData, callback);
-              },
-            editNode: function(nodeData,callback) {
-                nodeData.label = 'hello world';
-                callback(nodeData);
-              },
-            editEdge: true,
-            deleteNode: true,
-            deleteEdge: true,
-            controlNodeStyle:{
-              // all node options are valid.
-            }
-          },
-        edges:{
-            arrows: 'to',
-            color: 'red',
-            font: '12px arial #ff0000',
-            scaling:{
-              label: true,
-            },
-            shadow: true,
-            smooth: true,
-          }
-    };
-    
-    this.network = new Network(container, data, options);
+    this.display = new Phaser.Game(config, this.boxes);
+    this.editor = new NetworkEditor();
+
+    this.fillHTMLSelect();
     this.initListeners();
+    }
+
+    fillHTMLSelect(){
+      window.boxes.forEach(box => {
+        let option = document.createElement('option');
+        option.style.color = 'white';
+        option.style.background = box.color;
+        option.textContent = box.id;
+        document.getElementById('node-configuration').appendChild(option);
+      });
     }
 
     initListeners(){
         let self = this;
         document.getElementById('create-new-node').addEventListener('click',(e)=>{
-            self.network.addNodeMode();
+          self.editor.network.addNodeMode();
         });
         document.getElementById('create-new-edge').addEventListener('click',(e)=>{
-            self.network.addEdgeMode();
+            self.editor.network.addEdgeMode();
         });
-    }
-
-    checkEdge(edgeData,callback){
-        if (edgeData.from === edgeData.to) {
-        }
-        else {
-          callback(edgeData);
-        }
+        document.getElementById('delete-selected').addEventListener('click',(e)=>{
+          self.editor.network.deleteSelected();
+        });
     }
 }
 
