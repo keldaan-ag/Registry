@@ -1,6 +1,7 @@
 import { DataSet } from "vis-data";
 import { Network } from "vis-network";
 import "vis-network/styles/vis-network.css";
+import INCREMENT_TYPE from "./constants";
 
 class NetworkEditor{
     constructor(parent){
@@ -8,8 +9,30 @@ class NetworkEditor{
         this.parent = parent;
         // create an array with nodes
         var nodes = new DataSet([
-            { id: 1, label: "Input", color: '#ffffff', font: '12px Verdana #000000'},
-            { id: 2, label: "Output", color: '#000000', font: '12px Verdana #ffffff'}
+        {
+            id: 1,
+            label: "Input",
+            color: '#ffffff',
+            font: '12px Verdana #000000',
+            fixed: {
+                x:true,
+                y:true
+            },
+            x: 0,
+            y: 0
+        },
+            {
+                id: 2,
+                label: "Output",
+                color: '#000000',
+                font: '12px Verdana #ffffff',
+                fixed: {
+                    x:true,
+                    y:true
+                },
+                x: 400,
+                y: 400
+            }
         ]);
 
         // create an array with edges
@@ -30,20 +53,13 @@ class NetworkEditor{
                 enabled: false,
                 initiallyActive: false,
                 addNode: function(nodeData, callback){
-                    let e = document.getElementById('node-configuration');
-                    let id = e.options[e.selectedIndex].text;
-                    nodeData.label = `${window.boxes.get(id).id}+`;
-                    nodeData.color = window.boxes.get(id).color;
-                    if(id != 'output' && id != 'input'){
-                        nodeData.font = '36px Verdana #ffffff';
-                    }
-                    callback(nodeData);
+                    self.addNode(nodeData, callback);
                 },
                 addEdge: function(edgeData,callback) {
                     self.checkEdge(edgeData, callback);
                 },
                 editNode: function(nodeData,callback) {
-                    nodeData.label = 'hello world';
+                    console.log(nodeData);
                     callback(nodeData);
                 },
                 editEdge: true,
@@ -64,9 +80,9 @@ class NetworkEditor{
                 smooth: true,
             },
             nodes:{
-            shape:'circle',
-            font: '12px Verdana #ffffff',
-            shadow: true
+                shape:'circle',
+                font: '12px Verdana #ffffff',
+                shadow: true,
             }
         };
 
@@ -79,6 +95,20 @@ class NetworkEditor{
         else {
           callback(edgeData);
         }
+    }
+    addNode(nodeData, callback){
+        let e = document.getElementById('node-configuration');
+        let id = e.options[e.selectedIndex].text;
+        let box = window.boxes.get(id);
+        nodeData.color = box.color;
+        let el = document.getElementById('node-type');
+        nodeData.type = el.options[el.selectedIndex].value;
+        nodeData.label = `${box.id}${el.options[el.selectedIndex].textContent}`;
+
+        if(id != 'output' && id != 'input'){
+            nodeData.font = '36px Verdana #ffffff';
+        }
+        callback(nodeData);
     }
 }   
 
