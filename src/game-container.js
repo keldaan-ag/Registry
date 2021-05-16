@@ -36,7 +36,7 @@ class GameContainer{
     
     this.graph = new Graph();
     this.display = new Phaser.Game(config, this.boxes);
-    this.editor = new NetworkEditor(this, this.graph.nodes);
+    this.editor = new NetworkEditor(this, this.graph.input.id, this.graph.output.id);
 
    this.currentNode = undefined;
 
@@ -77,8 +77,9 @@ class GameContainer{
           let e = document.getElementById('edge-type');
           let type = e.options[e.selectedIndex].value;
           edgeData.type = type;
-          let edge = this.graph.addEdge(edgeData.id ,type ,edgeData.from, edgeData.to);
+          let edge = this.graph.addEdge(type, edgeData.from, edgeData.to);
           if(edge){
+            edgeData.id = edge.id;
             edgeData.dashes = type == EDGE_TYPE.NORMAL_EDGE ? false : true;
             callback(edgeData);
           }
@@ -90,8 +91,9 @@ class GameContainer{
       let box = window.boxes.get(e.options[e.selectedIndex].text);
       let el = document.getElementById('node-type');
       let type = el.options[el.selectedIndex].value;
-      let node = this.graph.addNode(nodeData.id, type, box.id);
+      let node = this.graph.addNode(type, box.id);
       if(node){
+        nodeData.id = node.id;
         nodeData.color = box.color;
         nodeData.label = node.getName();
         nodeData.font = '30px Verdana #ffffff';

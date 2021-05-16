@@ -6,19 +6,19 @@ export default class Graph{
     constructor(){
         this.nodes = new Map();
         this.edges = new Map();
-        this.input = new Node('input',NODE_TYPE.INPUT,undefined);
-        this.output = new Node('output',NODE_TYPE.OUTPUT,undefined);
+        this.input = new Node(NODE_TYPE.INPUT,undefined);
+        this.output = new Node(NODE_TYPE.OUTPUT,undefined);
         this.nodes.set(this.input.id, this.input);
         this.nodes.set(this.output.id, this.output);
     }
 
-    addNode(id, type, box){
-        let node = new Node(id, type, box);
+    addNode(type, box){
+        let node = new Node(type, box);
         this.nodes.set(node.id, node);
         return node;
     }
 
-    addEdge(id, type, from, to){
+    addEdge(type, from, to){
         if(to == NODE_TYPE.INPUT){
             return;
         }
@@ -34,7 +34,7 @@ export default class Graph{
                         break;
                     }
                     else{
-                        edge = new Edge(id, from, to, type);
+                        edge = new Edge(from, to, type);
                         break;
                     }
                 
@@ -48,7 +48,7 @@ export default class Graph{
                         break;
                     }
                     else{
-                        edge = new Edge(id, from, to, type);
+                        edge = new Edge(from, to, type);
                         break;
                     }
                     

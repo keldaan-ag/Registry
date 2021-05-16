@@ -5,13 +5,13 @@ import {EDGE_TYPE} from "./constants";
 
 
 class NetworkEditor{
-    constructor(parent){
+    constructor(parent, inputId, outputId){
         let self = this;
         this.parent = parent;
         // create an array with nodes
         var nodes = new DataSet([
         {
-            id: "input",
+            id: inputId,
             label: "Input",
             color: '#ffffff',
             font: '12px Verdana #000000',
@@ -23,7 +23,7 @@ class NetworkEditor{
             y: 0
         },
             {
-                id: "output",
+                id: outputId,
                 label: "Output",
                 color: '#000000',
                 font: '12px Verdana #ffffff',

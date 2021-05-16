@@ -1,6 +1,8 @@
+import uniqid from 'uniqid';
+
 export default class Edge{
-    constructor(id, from, to, type){
-        this.id = id;
+    constructor(from, to, type){
+        this.id = uniqid();
         this.from = from;
         this.to = to;
         this.type = type;

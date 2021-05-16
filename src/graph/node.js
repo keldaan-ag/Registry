@@ -1,8 +1,9 @@
 import {NODE_TYPE} from '../constants/index';
+import uniqid from 'uniqid';
 
 export default class Node{
-    constructor(id, type, box){
-        this.id = id;
+    constructor(type, box){
+        this.id = uniqid();
         this.type = type;
         this.box = box;
         this.symbol = '';
