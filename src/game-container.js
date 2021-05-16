@@ -35,6 +35,8 @@ class GameContainer{
     this.display = new Phaser.Game(config, this.boxes);
     this.editor = new NetworkEditor(this);
 
+   this.currentNode = undefined;
+
     this.fillHTMLSelect();
     this.initListeners();
     }
@@ -60,6 +62,26 @@ class GameContainer{
         document.getElementById('delete-selected').addEventListener('click',(e)=>{
           self.editor.network.deleteSelected();
         });
+        document.getElementById('step').addEventListener('click', e=>{
+          self.step();
+        });
+    }
+
+    step(){
+      if(!this.currentNode){
+        this.currentNode = 'Input';
+        this.editor.network.setSelection({nodes: [this.currentNode]});
+      }
+      if(this.currentNode == 'Output'){
+        this.currentNode = 'Input';
+      }
+      else{
+        let connectedNodes = this.editor.network.getConnectedNodes(this.currentNode,'to');
+        this.currentNode = connectedNodes[0];
+        this.editor.network.setSelection({nodes: [this.currentNode],edges:[]});
+      }
+      console.log(this.editor.network.body.nodes._data[this.currentNode]);
+      console.log(this.editor.network.getSelection());
     }
 }
 

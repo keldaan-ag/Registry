@@ -14,3 +14,8 @@ export const INCREMENT_TYPE = {
     INCREMENT: 'INCREMENT',
     DECREMENT: 'DECREMENT'
 };
+
+export const EDGE_TYPE = {
+    NORMAL_EDGE: 'NORMAL_EDGE',
+    IFZERO_EDGE: 'IFZERO_EDGE'
+};
