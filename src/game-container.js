@@ -1,8 +1,10 @@
 import './index.css';
 import {  Main } from './scenes';
+import {EDGE_TYPE} from './constants/index';
 import "vis-network/styles/vis-network.css";
 import NetworkEditor from './network-editor';
 import Box from './Box';
+import Graph from './graph/graph';
 
 class GameContainer{
     constructor(numberOfBox){
@@ -32,8 +34,9 @@ class GameContainer{
       window.boxes.set(box.id, box);
     }
     
+    this.graph = new Graph();
     this.display = new Phaser.Game(config, this.boxes);
-    this.editor = new NetworkEditor(this);
+    this.editor = new NetworkEditor(this, this.graph.nodes);
 
    this.currentNode = undefined;
 
@@ -66,6 +69,35 @@ class GameContainer{
           self.step();
         });
     }
+
+  addEdge(edgeData,callback){
+      if (edgeData.from === edgeData.to) {
+      }
+      else {
+          let e = document.getElementById('edge-type');
+          let type = e.options[e.selectedIndex].value;
+          edgeData.type = type;
+          let edge = this.graph.addEdge(edgeData.id ,type ,edgeData.from, edgeData.to);
+          if(edge){
+            edgeData.dashes = type == EDGE_TYPE.NORMAL_EDGE ? false : true;
+            callback(edgeData);
+          }
+      }
+  }
+
+  addNode(nodeData, callback){
+      let e = document.getElementById('node-configuration');
+      let box = window.boxes.get(e.options[e.selectedIndex].text);
+      let el = document.getElementById('node-type');
+      let type = el.options[el.selectedIndex].value;
+      let node = this.graph.addNode(nodeData.id, type, box.id);
+      if(node){
+        nodeData.color = box.color;
+        nodeData.label = node.getName();
+        nodeData.font = '30px Verdana #ffffff';
+        callback(nodeData);
+      }
+  }
 
     step(){
       if(!this.currentNode){

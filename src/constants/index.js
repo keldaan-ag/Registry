@@ -10,9 +10,11 @@ export const TEXTURE_GROUND = 'GROUND';
 export const TEXTURE_SKY = 'SKY';
 export const TEXTURE_STAR = 'STAR';
 
-export const INCREMENT_TYPE = {
+export const NODE_TYPE = {
     INCREMENT: 'INCREMENT',
-    DECREMENT: 'DECREMENT'
+    DECREMENT: 'DECREMENT',
+    INPUT: 'INPUT',
+    OUTPUT: 'OUTPUT'
 };
 
 export const EDGE_TYPE = {

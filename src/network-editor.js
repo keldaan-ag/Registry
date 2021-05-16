@@ -1,7 +1,7 @@
 import { DataSet } from "vis-data";
 import { Network } from "vis-network";
 import "vis-network/styles/vis-network.css";
-import {INCREMENT_TYPE, EDGE_TYPE} from "./constants";
+import {EDGE_TYPE} from "./constants";
 
 
 class NetworkEditor{
@@ -11,7 +11,7 @@ class NetworkEditor{
         // create an array with nodes
         var nodes = new DataSet([
         {
-            id: "Input",
+            id: "input",
             label: "Input",
             color: '#ffffff',
             font: '12px Verdana #000000',
@@ -23,7 +23,7 @@ class NetworkEditor{
             y: 0
         },
             {
-                id: "Output",
+                id: "output",
                 label: "Output",
                 color: '#000000',
                 font: '12px Verdana #ffffff',
@@ -38,7 +38,6 @@ class NetworkEditor{
 
         // create an array with edges
         var edges = new DataSet([
-
         ]);
 
         // create a network
@@ -54,10 +53,10 @@ class NetworkEditor{
                 enabled: false,
                 initiallyActive: false,
                 addNode: function(nodeData, callback){
-                    self.checkNode(nodeData, callback);
+                    self.parent.addNode(nodeData, callback);
                 },
                 addEdge: function(edgeData,callback) {
-                    self.checkEdge(edgeData, callback);
+                    self.parent.addEdge(edgeData, callback);
                 },
                 editNode: function(nodeData,callback) {
                     console.log(nodeData);
@@ -88,32 +87,6 @@ class NetworkEditor{
         };
 
         this.network = new Network(container, data, options);
-    }
-    
-    checkEdge(edgeData,callback){
-        if (edgeData.from === edgeData.to) {
-        }
-        else {
-            let e = document.getElementById('edge-type');
-            let type = e.options[e.selectedIndex].value;
-            edgeData.type = type;
-            edgeData.dashes = type == EDGE_TYPE.NORMAL_EDGE ? false : true;
-            callback(edgeData);
-        }
-    }
-    checkNode(nodeData, callback){
-        let e = document.getElementById('node-configuration');
-        let id = e.options[e.selectedIndex].text;
-        let box = window.boxes.get(id);
-        nodeData.color = box.color;
-        let el = document.getElementById('node-type');
-        nodeData.type = el.options[el.selectedIndex].value;
-        nodeData.label = `${box.id}${el.options[el.selectedIndex].textContent}`;
-
-        if(id != 'output' && id != 'input'){
-            nodeData.font = '36px Verdana #ffffff';
-        }
-        callback(nodeData);
     }
 }   
 
