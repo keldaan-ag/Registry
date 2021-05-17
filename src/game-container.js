@@ -101,22 +101,47 @@ class GameContainer{
       }
   }
 
-    step(){
-      if(!this.currentNode){
-        this.currentNode = 'Input';
-        this.editor.network.setSelection({nodes: [this.currentNode]});
-      }
-      if(this.currentNode == 'Output'){
-        this.currentNode = 'Input';
-      }
-      else{
-        let connectedNodes = this.editor.network.getConnectedNodes(this.currentNode,'to');
-        this.currentNode = connectedNodes[0];
-        this.editor.network.setSelection({nodes: [this.currentNode],edges:[]});
-      }
-      console.log(this.editor.network.body.nodes._data[this.currentNode]);
-      console.log(this.editor.network.getSelection());
+  editNode(nodeData, callback){
+
+  }
+
+  editEdge(edgeData, callback){
+
+  }
+
+  deleteNode(nodeData, callback){
+    let deleted = false;
+    nodeData.nodes.forEach(id =>{
+      deleted = this.graph.deleteNode(id);
+    });
+    if(deleted){
+      callback(nodeData);
     }
+  }
+
+  deleteEdge(edgeData, callback){
+    edgeData.edges.forEach(id =>{
+      this.graph.deleteEdge(id);
+    });
+    callback(edgeData);
+  }
+
+  step(){
+    if(!this.currentNode){
+      this.currentNode = 'Input';
+      this.editor.network.setSelection({nodes: [this.currentNode]});
+    }
+    if(this.currentNode == 'Output'){
+      this.currentNode = 'Input';
+    }
+    else{
+      let connectedNodes = this.editor.network.getConnectedNodes(this.currentNode,'to');
+      this.currentNode = connectedNodes[0];
+      this.editor.network.setSelection({nodes: [this.currentNode],edges:[]});
+    }
+    console.log(this.editor.network.body.nodes._data[this.currentNode]);
+    console.log(this.editor.network.getSelection());
+  }
 }
 
 export default GameContainer;

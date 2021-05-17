@@ -59,11 +59,18 @@ export default class Graph{
                         break;
                     }
                     
-                    if(type == EDGE_TYPE.NORMAL_EDGE){
-    
+                    let isAlreadyEdge = false;
+                    this.edges.forEach(edge =>{
+                        if(edge.from == from && edge.type == type){
+                            isAlreadyEdge = true;
+                        }
+                    });
+
+                    if(isAlreadyEdge){
+                        break;
                     }
-                    if(type == EDGE_TYPE.IFZERO_EDGE){
-    
+                    else{
+                        edge = new Edge(from, to, type);
                     }
     
                 default:
@@ -75,6 +82,29 @@ export default class Graph{
             }
         }
         
+    }
+
+    deleteNode(id){
+        if(this.nodes.get(id).type == NODE_TYPE.INPUT || this.nodes.get(id).type == NODE_TYPE.OUTPUT){
+            return false;
+        }
+        else{
+            let edgesIdsToDelete = [];
+            this.edges.forEach(edge =>{
+                if(edge.from == id || edge.to == id){
+                    edgesIdsToDelete.push(edge.id);
+                }
+            });
+            edgesIdsToDelete.forEach(id =>{
+                this.edges.delete(id);
+            });
+            this.nodes.delete(id);
+            return true;
+        }
+    }
+
+    deleteEdge(id){
+        this.edges.delete(id);
     }
 
     getFromNodeEdges(nodeId){

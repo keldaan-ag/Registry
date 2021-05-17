@@ -59,19 +59,24 @@ class NetworkEditor{
                     self.parent.addEdge(edgeData, callback);
                 },
                 editNode: function(nodeData,callback) {
-                    console.log(nodeData);
-                    callback(nodeData);
+                    self.parent.editNode(nodeData, callback);
                 },
-                editEdge: true,
-                deleteNode: true,
-                deleteEdge: true,
+                editEdge: function(nodeData,callback) {
+                    self.parent.editEdge(nodeData, callback);
+                },
+                deleteNode: function(nodeData, callback){
+                    self.parent.deleteNode(nodeData, callback);
+                },
+                deleteEdge: function(nodeData, callback){
+                    self.parent.deleteEdge(nodeData, callback);
+                },
                 controlNodeStyle:{
                 // all node options are valid.
                 }
             },
             edges:{
                 arrows: 'to',
-                color: 'gray',
+                color: '#000000',
                 font: '12px Verdana #ff0000',
                 scaling:{
                 label: true,
