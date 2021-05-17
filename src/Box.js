@@ -4,6 +4,7 @@ class Box{
         this.color = color;
         this.phaserColor = phaserColor;
         this.colorText = colorText;
+        this.value = 0;
     }
 }
 

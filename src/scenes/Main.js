@@ -20,7 +20,7 @@ class Main extends Phaser.Scene {
 
   addBox(id, color)
   {
-    this.boxes.add(new Box(this, id, 100,100, color));
+    this.boxes.add(new Box(this, id, 100, 100, color));
     const circle = new Phaser.Geom.Circle(300, 300, 100);
     Phaser.Actions.PlaceOnCircle(this.boxes.getChildren(), circle);
   }

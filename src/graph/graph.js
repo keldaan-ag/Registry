@@ -3,13 +3,15 @@ import {NODE_TYPE, EDGE_TYPE} from '../constants/index';
 import Edge from './edge';
 
 export default class Graph{
-    constructor(){
+    constructor(parent){
         this.nodes = new Map();
         this.edges = new Map();
         this.input = new Node(NODE_TYPE.INPUT,undefined);
         this.output = new Node(NODE_TYPE.OUTPUT,undefined);
         this.nodes.set(this.input.id, this.input);
         this.nodes.set(this.output.id, this.output);
+        this.currentId = '';
+        this.parent = parent;
     }
 
     addNode(type, box){
@@ -19,17 +21,17 @@ export default class Graph{
     }
 
     addEdge(type, from, to){
-        if(to == NODE_TYPE.INPUT){
+        if(this.nodes.get(to).type == NODE_TYPE.INPUT){
             return;
         }
         else{
-            let fromNodeEdges = this.getFromNodeEdges(from);
+            let fromNodeEdges = this.nodes.get(from).fromEdges;
             let fromNodeType = this.nodes.get(from).type;
     
             let edge;
             switch (fromNodeType) {
                 case NODE_TYPE.INPUT:
-                    if(fromNodeEdges.length > 0 || type != EDGE_TYPE.NORMAL_EDGE){
+                    if(fromNodeEdges.size > 0 || type != EDGE_TYPE.NORMAL_EDGE){
                         // only one normal edge allowed from input
                         break;
                     }
@@ -44,7 +46,7 @@ export default class Graph{
                 
                 case NODE_TYPE.INCREMENT:
                     // only one normal link allowed from increment link
-                    if(type == EDGE_TYPE.IFZERO_EDGE || fromNodeEdges.length > 0){
+                    if(type == EDGE_TYPE.IFZERO_EDGE || fromNodeEdges.size > 0){
                         break;
                     }
                     else{
@@ -55,7 +57,7 @@ export default class Graph{
                 case NODE_TYPE.DECREMENT:
     
                     // only one normal link and one if zero link allowed
-                    if(fromNodeEdges.length > 2){
+                    if(fromNodeEdges.size > 2){
                         break;
                     }
                     
@@ -77,11 +79,11 @@ export default class Graph{
                     break;
             }
             if(edge){
+                this.nodes.get(edge.from).fromEdges.add(edge.id);
                 this.edges.set(edge.id, edge);
                 return edge;
             }
         }
-        
     }
 
     deleteNode(id){
@@ -96,7 +98,7 @@ export default class Graph{
                 }
             });
             edgesIdsToDelete.forEach(id =>{
-                this.edges.delete(id);
+                this.deleteEdge(id);
             });
             this.nodes.delete(id);
             return true;
@@ -104,16 +106,77 @@ export default class Graph{
     }
 
     deleteEdge(id){
+        let fromNode = this.nodes.get(this.edges.get(id).from);
+        fromNode.fromEdges.delete(id);
         this.edges.delete(id);
     }
 
-    getFromNodeEdges(nodeId){
-        let ids = [];
-        this.edges.forEach(edge=>{
-            if(edge.from == nodeId){
-                ids.push(edge.id);
+    step(){
+        if(this.currentId == ''){
+            this.currentId = this.input.id;
+        }
+        else{
+            let currentNode = this.nodes.get(this.currentId);
+            switch (currentNode.type) {
+                case NODE_TYPE.INCREMENT:
+                    this.parent.incrementBox(currentNode.box);
+                    // should be only one
+                    currentNode.fromEdges.forEach(id =>{
+                        this.currentId = this.edges.get(id).to;
+                    });
+                    break;
+
+                case NODE_TYPE.DECREMENT:
+                    if(window.boxes.get(currentNode.box).value == 0){
+                        currentNode.fromEdges.forEach(id =>{
+                            if(this.edges.get(id).type == EDGE_TYPE.IFZERO_EDGE){
+                                this.currentId = this.edges.get(id).to;
+                            }
+                        });
+                    }
+                    else{
+                        this.parent.decrementBox(currentNode.box);
+                        currentNode.fromEdges.forEach(id =>{
+                            if(this.edges.get(id).type == EDGE_TYPE.NORMAL_EDGE){
+                                this.currentId = this.edges.get(id).to;
+                            }
+                        });
+                    }
+                    break;
+
+                case NODE_TYPE.INPUT:
+                    currentNode.fromEdges.forEach(id =>{
+                        this.currentId = this.edges.get(id).to;
+                    });
+                    break;
+
+                case NODE_TYPE.OUTPUT:
+                    break;
+
+                default:
+                    break;
             }
+        }
+    }
+
+    checkEnd(){
+        if(this.nodes.get(this.currentId).type == NODE_TYPE.OUTPUT){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    getCurrentNode(){
+        return[this.currentId];
+    }
+
+    getCurrentEdges(){
+        let edges = [];
+        this.nodes.get(this.currentId).fromEdges.forEach(id =>{
+            edges.push(id);
         });
-        return ids;
+        return edges;
     }
 }

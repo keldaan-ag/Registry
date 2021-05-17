@@ -24,6 +24,7 @@ export default class Node{
             default:
                 break;
         }
+        this.fromEdges = new Set();
     }
 
     getName(){

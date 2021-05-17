@@ -1,13 +1,13 @@
 import './index.css';
 import {  Main } from './scenes';
-import {EDGE_TYPE} from './constants/index';
+import {EDGE_TYPE, SCENE_MAIN} from './constants/index';
 import "vis-network/styles/vis-network.css";
 import NetworkEditor from './network-editor';
 import Box from './Box';
 import Graph from './graph/graph';
 
 class GameContainer{
-    constructor(numberOfBox){
+    constructor(numberOfBox, testValues, rule){
       let self = this;
         /**
      * https://photonstorm.github.io/phaser3-docs/Phaser.Types.Core.html#.GameConfig
@@ -34,7 +34,11 @@ class GameContainer{
       window.boxes.set(box.id, box);
     }
     
-    this.graph = new Graph();
+    this.testValues = testValues;
+    this.rule = rule;
+    this.correctValues = [];
+    this.computeCorrectValues();
+    this.graph = new Graph(this);
     this.display = new Phaser.Game(config, this.boxes);
     this.editor = new NetworkEditor(this, this.graph.input.id, this.graph.output.id);
 
@@ -127,20 +131,32 @@ class GameContainer{
   }
 
   step(){
-    if(!this.currentNode){
-      this.currentNode = 'Input';
-      this.editor.network.setSelection({nodes: [this.currentNode]});
-    }
-    if(this.currentNode == 'Output'){
-      this.currentNode = 'Input';
-    }
-    else{
-      let connectedNodes = this.editor.network.getConnectedNodes(this.currentNode,'to');
-      this.currentNode = connectedNodes[0];
-      this.editor.network.setSelection({nodes: [this.currentNode],edges:[]});
-    }
-    console.log(this.editor.network.body.nodes._data[this.currentNode]);
-    console.log(this.editor.network.getSelection());
+    this.graph.step();
+    this.editor.network.setSelection({nodes: this.graph.getCurrentNode(), edges: this.graph.getCurrentEdges() });
+  }
+
+  incrementBox(boxId){
+    window.boxes.get(boxId).value += 1;
+    this.display.scene.getScene(SCENE_MAIN).boxes.getChildren().forEach(child =>{
+      if(boxId == child.id){
+        child.increment();
+      }
+    });
+  }
+
+  decrementBox(boxId){
+    window.boxes.get(boxId).value -= 1;
+    this.display.scene.getScene(SCENE_MAIN).boxes.getChildren().forEach(child =>{
+      if(boxId == child.id){
+        child.decrement();
+      }
+    });
+  }
+
+  computeCorrectValues(){
+    this.testValues.forEach(value =>{
+      this.correctValues.push(this.rule(value));
+    });
   }
 }
 
