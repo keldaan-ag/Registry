@@ -30,8 +30,8 @@ class NetworkEditor{
                     x:true,
                     y:true
                 },
-                x: 700,
-                y: 700
+                x: 500,
+                y: 500
             }
         ]);
 

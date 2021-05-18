@@ -25,11 +25,11 @@ class GameContainer{
         backgroundColor: '#fff'
     };
 
-    window.boxes = new Map();
+    this.boxes = new Map();
     
     for (let i = 0; i < 2; i++) {
       let box = new Box(IDS[i], COLORS[i],PHASER_COLORS[i]);
-      window.boxes.set(box.id, box);
+      this.boxes.set(box.id, box);
     }
     
     this.inputValues = inputValues;
@@ -40,7 +40,8 @@ class GameContainer{
     this.fillBoxWithInputValues();
 
     this.graph = new Graph(this);
-    this.display = new Phaser.Game(config, this.boxes);
+    this.display = new Phaser.Game(config);
+    this.display.parent = this;
     this.editor = new NetworkEditor(this, this.graph.start.id, this.graph.end.id);
     this.simulation = false;
     this.inputIndex = 0;
@@ -67,7 +68,7 @@ class GameContainer{
 
   fillHTMLSelect(){
     document.getElementById('node-configuration').innerHTML = '';
-    window.boxes.forEach(box => {
+    this.boxes.forEach(box => {
       let option = document.createElement('option');
       option.style.color = 'white';
       option.style.background = box.color;
@@ -85,15 +86,19 @@ class GameContainer{
           self.editor.network.addEdgeMode();
       });
       document.getElementById('delete-selected').addEventListener('click',(e)=>{
-        self.editor.network.deleteSelected();
+        let selection = self.editor.network.getSelection();
+        if(selection.edges.length != 0 || selection.nodes.length != 0){
+          self.editor.network.deleteSelected();
+        }
+        self.editor.network.setSelection({nodes:[],edges:[]});
       });
       document.getElementById('create-box').addEventListener('click',(e)=>{
-        if(window.boxes.size <9){
+        if(this.boxes.size <9){
           self.createBox();
         }
       });
       document.getElementById('delete-box').addEventListener('click',(e)=>{
-        if(window.boxes.size >2){
+        if(this.boxes.size >2){
           self.deleteBox();
         }
       });
@@ -105,6 +110,11 @@ class GameContainer{
       });
       document.getElementById('stop-simulation').addEventListener('click', e=>{
         self.startEditMode();
+      });
+      document.getElementById('phaser-canvas').addEventListener('ready', e=>{
+        self.boxes.forEach(box =>{
+          this.display.scene.getScene(SCENE_MAIN).addBox(box.id, box.phaserColor, box.value);
+        });
       });
   }
 
@@ -126,7 +136,7 @@ class GameContainer{
 
   addNode(nodeData, callback){
       let e = document.getElementById('node-configuration');
-      let box = window.boxes.get(e.options[e.selectedIndex].text);
+      let box = this.boxes.get(e.options[e.selectedIndex].text);
       let el = document.getElementById('node-type');
       let type = el.options[el.selectedIndex].value;
       let node = this.graph.addNode(type, box.id);
@@ -167,7 +177,7 @@ class GameContainer{
   step(){
     this.graph.step();
     if(this.graph.checkEnd()){
-      this.outputValues.push(window.boxes.get('B').value);
+      this.outputValues.push(this.boxes.get('B').value);
       this.drawOutputValues();
       this.inputIndex += 1;
       this.updateValues();
@@ -186,7 +196,7 @@ class GameContainer{
   }
 
   incrementBox(boxId){
-    window.boxes.get(boxId).value += 1;
+    this.boxes.get(boxId).value += 1;
     this.display.scene.getScene(SCENE_MAIN).boxes.getChildren().forEach(child =>{
       if(boxId == child.id){
         child.increment();
@@ -236,12 +246,12 @@ class GameContainer{
   updateValues(){
     this.fillBoxWithInputValues();
     if(this.display.scene.getScene(SCENE_MAIN)){
-      this.display.scene.getScene(SCENE_MAIN).reset();
+      this.display.scene.getScene(SCENE_MAIN).updateBoxes(this.boxes);
     }
   }
   
   fillBoxWithInputValues(){
-    window.boxes.forEach(box=>{
+    this.boxes.forEach(box=>{
       if(box.id == 'A'){
         box.value = this.inputValues[this.inputIndex];
       }
@@ -252,7 +262,7 @@ class GameContainer{
   }
 
   decrementBox(boxId){
-    window.boxes.get(boxId).value -= 1;
+    this.boxes.get(boxId).value -= 1;
     this.display.scene.getScene(SCENE_MAIN).boxes.getChildren().forEach(child =>{
       if(boxId == child.id){
         child.decrement();
@@ -267,19 +277,19 @@ class GameContainer{
   }
 
   createBox(){
-    let box = new Box(IDS[window.boxes.size], COLORS[window.boxes.size], PHASER_COLORS[window.boxes.size]);
-    window.boxes.set(box.id, box);
+    let box = new Box(IDS[this.boxes.size], COLORS[this.boxes.size], PHASER_COLORS[this.boxes.size]);
+    this.boxes.set(box.id, box);
     this.display.scene.getScene(SCENE_MAIN).addBox(box.id, box.phaserColor, box.value);
     this.fillHTMLSelect();
   }
 
   deleteBox(){
-    let idToDelete = IDS[window.boxes.size - 1];
+    let idToDelete = IDS[this.boxes.size - 1];
     this.display.scene.getScene(SCENE_MAIN).deleteBox(idToDelete);
     this.editor.network.unselectAll();
     this.editor.network.selectNodes(this.graph.deleteNodesWithBox(idToDelete));
     this.editor.network.deleteSelected();
-    window.boxes.delete(IDS[window.boxes.size - 1]);
+    this.boxes.delete(IDS[this.boxes.size - 1]);
     this.fillHTMLSelect();
 
   }

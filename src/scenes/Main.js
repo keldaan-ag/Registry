@@ -1,4 +1,4 @@
-import {SCENE_MAIN} from '../constants/index';
+import {IDS, PHASER_COLORS, SCENE_MAIN} from '../constants/index';
 import {Box} from '../gameObjects/index';
 
 class Main extends Phaser.Scene {
@@ -8,14 +8,12 @@ class Main extends Phaser.Scene {
   }
 
   create() {
-    let self = this;
     //  Stop the right-click from triggering the context menu
     //  You can also set this in the game config
     this.input.mouse.disableContextMenu();
-
     this.boxes = new Phaser.GameObjects.Group(this);
-    window.boxes.forEach(box => {
-      self.addBox(box.id, box.phaserColor, box.value);
+    this.game.parent.boxes.forEach(box=>{
+      this.addBox(box.id, box.phaserColor, box.value);
     });
   }
 
@@ -33,9 +31,9 @@ class Main extends Phaser.Scene {
     Phaser.Actions.PlaceOnCircle(this.boxes.getChildren(), this.circle);
   }
 
-  reset(){
+  updateBoxes(boxes){
     this.boxes.getChildren().forEach(box =>{
-      box.reset(window.boxes.get(box.id).value);
+      box.updateValue(boxes.get(box.id).value);
     });
   }
 }

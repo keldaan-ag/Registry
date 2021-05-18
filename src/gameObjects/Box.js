@@ -23,7 +23,7 @@ export default class Box extends Phaser.GameObjects.Container {
       this.tokenDisplay.setText(this.value);
     }
 
-    reset(value){
+    updateValue(value){
       this.value = value;
       this.tokenDisplay.setText(this.value);
     }

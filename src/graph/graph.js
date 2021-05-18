@@ -131,7 +131,7 @@ export default class Graph{
                     break;
 
                 case NODE_TYPE.DECREMENT:
-                    if(window.boxes.get(currentNode.box).value == 0){
+                    if(this.parent.boxes.get(currentNode.box).value == 0){
                         currentNode.fromEdges.forEach(id =>{
                             if(this.edges.get(id).type == EDGE_TYPE.IFZERO_EDGE){
                                 this.currentId = this.edges.get(id).to;
