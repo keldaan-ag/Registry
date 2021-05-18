@@ -8,10 +8,10 @@ export default class Node{
         this.box = box;
         this.symbol = '';
         switch (this.type) {
-            case NODE_TYPE.INPUT:
+            case NODE_TYPE.START:
                 break;
             
-            case NODE_TYPE.OUTPUT:
+            case NODE_TYPE.END:
                 break;
             
             case NODE_TYPE.INCREMENT:

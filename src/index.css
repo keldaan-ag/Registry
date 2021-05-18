@@ -3,19 +3,19 @@ body {
   background: #fff;
 
   /* reset */
-  font-family: 'Lucida Grande', Helvetica, Arial, sans-serif;
+  font-family: Verdana;
   margin: 0;
   padding: 0;
 }
 
 body,
 a {
-  color: #fff;
+  color: #000000;
 }
 
 #mynetwork {
-  width: 600px;
-  height: 600px;
+  width: 800px;
+  height: 800px;
   border: 1px solid lightgray;
 }
 

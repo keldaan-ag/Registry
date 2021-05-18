@@ -1,18 +1,17 @@
 import { DataSet } from "vis-data";
 import { Network } from "vis-network";
 import "vis-network/styles/vis-network.css";
-import {EDGE_TYPE} from "./constants";
 
 
 class NetworkEditor{
-    constructor(parent, inputId, outputId){
+    constructor(parent, startId, endId){
         let self = this;
         this.parent = parent;
         // create an array with nodes
         var nodes = new DataSet([
         {
-            id: inputId,
-            label: "Input",
+            id: startId,
+            label: "Start",
             color: '#ffffff',
             font: '12px Verdana #000000',
             fixed: {
@@ -23,16 +22,16 @@ class NetworkEditor{
             y: 0
         },
             {
-                id: outputId,
-                label: "Output",
+                id: endId,
+                label: "End",
                 color: '#000000',
                 font: '12px Verdana #ffffff',
                 fixed: {
                     x:true,
                     y:true
                 },
-                x: 400,
-                y: 400
+                x: 700,
+                y: 700
             }
         ]);
 
@@ -92,6 +91,10 @@ class NetworkEditor{
         };
 
         this.network = new Network(container, data, options);
+    }
+
+    reset(startId){
+        this.network.selectNodes([startId], true);
     }
 }   
 

@@ -1,20 +1,20 @@
 import './index.css';
 import {  Main } from './scenes';
-import {EDGE_TYPE, SCENE_MAIN} from './constants/index';
+import {EDGE_TYPE, SCENE_MAIN, COLORS, PHASER_COLORS, IDS} from './constants/index';
 import "vis-network/styles/vis-network.css";
 import NetworkEditor from './network-editor';
 import Box from './Box';
 import Graph from './graph/graph';
 
 class GameContainer{
-    constructor(numberOfBox, testValues, rule){
+    constructor(inputValues, rule){
       let self = this;
         /**
      * https://photonstorm.github.io/phaser3-docs/Phaser.Types.Core.html#.GameConfig
      */
     const config = {
-        width: 600,
-        height: 600,
+        width: 800,
+        height: 800,
         title: 'Phaser Template',
         // see `.env` and `package.json`
         url: process.env.WEB_APP_HOMEPAGE,
@@ -26,53 +26,87 @@ class GameContainer{
     };
 
     window.boxes = new Map();
-    let colors = ['red','green','blue'];
-    let phaserColors = [0xff0000,0x00ff00,0x0000ff];
-    let ids = ['A', 'B', 'C'];
-    for (let i = 0; i < numberOfBox; i++) {
-      let box = new Box(ids[i], colors[i],phaserColors[i]);
+    
+    for (let i = 0; i < 2; i++) {
+      let box = new Box(IDS[i], COLORS[i],PHASER_COLORS[i]);
       window.boxes.set(box.id, box);
     }
     
-    this.testValues = testValues;
+    this.inputValues = inputValues;
     this.rule = rule;
     this.correctValues = [];
+    this.outputValues = [];
     this.computeCorrectValues();
+    this.fillBoxWithInputValues();
+
     this.graph = new Graph(this);
     this.display = new Phaser.Game(config, this.boxes);
-    this.editor = new NetworkEditor(this, this.graph.input.id, this.graph.output.id);
-
-   this.currentNode = undefined;
+    this.editor = new NetworkEditor(this, this.graph.start.id, this.graph.end.id);
+    this.simulation = false;
+    this.inputIndex = 0;
+    
 
     this.fillHTMLSelect();
     this.initListeners();
-    }
+    this.startEditMode();
+    this.fillHTMLValues();
+  }
 
-    fillHTMLSelect(){
-      window.boxes.forEach(box => {
-        let option = document.createElement('option');
-        option.style.color = 'white';
-        option.style.background = box.color;
-        option.textContent = box.id;
-        document.getElementById('node-configuration').appendChild(option);
+  fillHTMLValues(){
+    this.inputValues.forEach(val =>{
+      let valHTML = document.createElement('p');
+      valHTML.textContent = val;
+      document.getElementById('input-values').appendChild(valHTML);
+    });
+    this.correctValues.forEach(val =>{
+      let valHTML = document.createElement('p');
+      valHTML.textContent = val;
+      document.getElementById('correct-values').appendChild(valHTML);
+    });
+  }
+
+  fillHTMLSelect(){
+    document.getElementById('node-configuration').innerHTML = '';
+    window.boxes.forEach(box => {
+      let option = document.createElement('option');
+      option.style.color = 'white';
+      option.style.background = box.color;
+      option.textContent = box.id;
+      document.getElementById('node-configuration').appendChild(option);
+    });
+  }
+
+  initListeners(){
+      let self = this;
+      document.getElementById('create-new-node').addEventListener('click',(e)=>{
+        self.editor.network.addNodeMode();
       });
-    }
-
-    initListeners(){
-        let self = this;
-        document.getElementById('create-new-node').addEventListener('click',(e)=>{
-          self.editor.network.addNodeMode();
-        });
-        document.getElementById('create-new-edge').addEventListener('click',(e)=>{
-            self.editor.network.addEdgeMode();
-        });
-        document.getElementById('delete-selected').addEventListener('click',(e)=>{
-          self.editor.network.deleteSelected();
-        });
-        document.getElementById('step').addEventListener('click', e=>{
-          self.step();
-        });
-    }
+      document.getElementById('create-new-edge').addEventListener('click',(e)=>{
+          self.editor.network.addEdgeMode();
+      });
+      document.getElementById('delete-selected').addEventListener('click',(e)=>{
+        self.editor.network.deleteSelected();
+      });
+      document.getElementById('create-box').addEventListener('click',(e)=>{
+        if(window.boxes.size <9){
+          self.createBox();
+        }
+      });
+      document.getElementById('delete-box').addEventListener('click',(e)=>{
+        if(window.boxes.size >2){
+          self.deleteBox();
+        }
+      });
+      document.getElementById('step').addEventListener('click', e=>{
+        self.step();
+      });
+      document.getElementById('start-simulation').addEventListener('click', e=>{
+        self.startSimulationMode();
+      });
+      document.getElementById('stop-simulation').addEventListener('click', e=>{
+        self.startEditMode();
+      });
+  }
 
   addEdge(edgeData,callback){
       if (edgeData.from === edgeData.to) {
@@ -132,7 +166,23 @@ class GameContainer{
 
   step(){
     this.graph.step();
-    this.editor.network.setSelection({nodes: this.graph.getCurrentNode(), edges: this.graph.getCurrentEdges() });
+    if(this.graph.checkEnd()){
+      this.outputValues.push(window.boxes.get('B').value);
+      this.drawOutputValues();
+      this.inputIndex += 1;
+      this.updateValues();
+      this.graph.reset();
+    }
+    this.editor.network.selectNodes(this.graph.getCurrentNode(),true);
+  }
+
+  drawOutputValues(){
+    document.getElementById('output-values').innerHTML = '';
+    this.outputValues.forEach(val =>{
+      let valHTML = document.createElement('p');
+      valHTML.textContent = val;
+      document.getElementById('output-values').appendChild(valHTML);
+    });
   }
 
   incrementBox(boxId){
@@ -140,6 +190,63 @@ class GameContainer{
     this.display.scene.getScene(SCENE_MAIN).boxes.getChildren().forEach(child =>{
       if(boxId == child.id){
         child.increment();
+      }
+    });
+  }
+
+  startSimulationMode(){
+
+    this.reset();
+    if(!this.simulation){
+      this.simulation = true;
+      document.getElementById('editor-panel').childNodes.forEach(node =>{
+        node.disabled = true;
+      });
+      document.getElementById('simulation-panel').childNodes.forEach(node =>{
+        node.disabled = false;
+      });
+      document.getElementById('start-simulation').disabled = true;
+    }
+  }
+
+  startEditMode(){
+
+    this.reset();
+    if(this.simulation){
+      this.simulation = false;
+      document.getElementById('editor-panel').childNodes.forEach(node =>{
+        node.disabled = false;
+      });
+      document.getElementById('simulation-panel').childNodes.forEach(node =>{
+        node.disabled = true;
+      });
+      document.getElementById('start-simulation').disabled = false;
+    }
+  }
+
+  reset(){
+    this.inputIndex = 0;
+    this.outputValues = [];
+    this.drawOutputValues();
+    this.updateValues();
+    this.graph.reset();
+    this.editor.reset(this.graph.start.id);
+  }
+
+  updateValues(){
+    this.fillBoxWithInputValues();
+    if(this.display.scene.getScene(SCENE_MAIN)){
+      this.display.scene.getScene(SCENE_MAIN).reset();
+    }
+  }
+  
+  fillBoxWithInputValues(){
+    window.boxes.forEach(box=>{
+      if(box.id == 'A'){
+        box.value = this.inputValues[this.inputIndex];
+      }
+      else{
+        box.value = 0;
       }
     });
   }
@@ -154,9 +261,27 @@ class GameContainer{
   }
 
   computeCorrectValues(){
-    this.testValues.forEach(value =>{
+    this.inputValues.forEach(value =>{
       this.correctValues.push(this.rule(value));
     });
+  }
+
+  createBox(){
+    let box = new Box(IDS[window.boxes.size], COLORS[window.boxes.size], PHASER_COLORS[window.boxes.size]);
+    window.boxes.set(box.id, box);
+    this.display.scene.getScene(SCENE_MAIN).addBox(box.id, box.phaserColor, box.value);
+    this.fillHTMLSelect();
+  }
+
+  deleteBox(){
+    let idToDelete = IDS[window.boxes.size - 1];
+    this.display.scene.getScene(SCENE_MAIN).deleteBox(idToDelete);
+    this.editor.network.unselectAll();
+    this.editor.network.selectNodes(this.graph.deleteNodesWithBox(idToDelete));
+    this.editor.network.deleteSelected();
+    window.boxes.delete(IDS[window.boxes.size - 1]);
+    this.fillHTMLSelect();
+
   }
 }
 

@@ -6,12 +6,16 @@ export default class Graph{
     constructor(parent){
         this.nodes = new Map();
         this.edges = new Map();
-        this.input = new Node(NODE_TYPE.INPUT,undefined);
-        this.output = new Node(NODE_TYPE.OUTPUT,undefined);
-        this.nodes.set(this.input.id, this.input);
-        this.nodes.set(this.output.id, this.output);
+        this.start = new Node(NODE_TYPE.START,undefined);
+        this.end = new Node(NODE_TYPE.END,undefined);
+        this.nodes.set(this.start.id, this.start);
+        this.nodes.set(this.end.id, this.end);
         this.currentId = '';
         this.parent = parent;
+    }
+
+    reset(){
+        this.currentId = this.start.id;
     }
 
     addNode(type, box){
@@ -21,7 +25,7 @@ export default class Graph{
     }
 
     addEdge(type, from, to){
-        if(this.nodes.get(to).type == NODE_TYPE.INPUT){
+        if(this.nodes.get(to).type == NODE_TYPE.START){
             return;
         }
         else{
@@ -30,9 +34,9 @@ export default class Graph{
     
             let edge;
             switch (fromNodeType) {
-                case NODE_TYPE.INPUT:
+                case NODE_TYPE.START:
                     if(fromNodeEdges.size > 0 || type != EDGE_TYPE.NORMAL_EDGE){
-                        // only one normal edge allowed from input
+                        // only one normal edge allowed from start
                         break;
                     }
                     else{
@@ -40,7 +44,7 @@ export default class Graph{
                         break;
                     }
                 
-                case NODE_TYPE.OUTPUT:
+                case NODE_TYPE.END:
                     //no from output node edge allowed
                     break;
                 
@@ -87,7 +91,7 @@ export default class Graph{
     }
 
     deleteNode(id){
-        if(this.nodes.get(id).type == NODE_TYPE.INPUT || this.nodes.get(id).type == NODE_TYPE.OUTPUT){
+        if(this.nodes.get(id).type == NODE_TYPE.START || this.nodes.get(id).type == NODE_TYPE.END){
             return false;
         }
         else{
@@ -113,7 +117,7 @@ export default class Graph{
 
     step(){
         if(this.currentId == ''){
-            this.currentId = this.input.id;
+            this.currentId = this.start.id;
         }
         else{
             let currentNode = this.nodes.get(this.currentId);
@@ -144,13 +148,13 @@ export default class Graph{
                     }
                     break;
 
-                case NODE_TYPE.INPUT:
+                case NODE_TYPE.START:
                     currentNode.fromEdges.forEach(id =>{
                         this.currentId = this.edges.get(id).to;
                     });
                     break;
 
-                case NODE_TYPE.OUTPUT:
+                case NODE_TYPE.END:
                     break;
 
                 default:
@@ -159,8 +163,18 @@ export default class Graph{
         }
     }
 
+    deleteNodesWithBox(boxId){
+        let idsToDelete = [];
+        this.nodes.forEach(node =>{
+            if(node.box == boxId){
+                idsToDelete.push(node.id);
+            }
+        });
+        return idsToDelete;
+    }
+
     checkEnd(){
-        if(this.nodes.get(this.currentId).type == NODE_TYPE.OUTPUT){
+        if(this.nodes.get(this.currentId).type == NODE_TYPE.END){
             return true;
         }
         else{
