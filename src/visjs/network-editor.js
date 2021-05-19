@@ -12,7 +12,12 @@ class NetworkEditor{
         {
             id: startId,
             label: "Start",
-            color: '#ffffff',
+            color: {
+                background:'#ffffff',
+                highlight: {
+                    background: '#D2E5FF'
+                  },
+                },
             font: '12px Verdana #000000',
             fixed: {
                 x:true,
@@ -24,7 +29,12 @@ class NetworkEditor{
             {
                 id: endId,
                 label: "End",
-                color: '#000000',
+                color: {
+                    background:'#000000',
+                    highlight: {
+                        background: '#D2E5FF'
+                      },
+                    },
                 font: '12px Verdana #ffffff',
                 fixed: {
                     x:true,

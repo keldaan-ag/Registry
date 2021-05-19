@@ -177,19 +177,23 @@ class GameContainer{
   step(){
     if(this.graph.checkEnd()){
 
-      if(this.outputValues.length <= this.inputValues.length){
+      if(this.outputValues.length < this.inputValues.length){
         this.outputValues.push(this.boxes.get('B').value);
         this.drawOutputValues();
-        this.inputIndex += 1;
-        this.updateValues();
-        this.graph.reset();
-      }
-      else{
-
+        if(this.outputValues.length == this.inputValues.length){
+          this.startEditMode();
+        }
+        else{
+          this.inputIndex += 1;
+          this.updateValues();
+          this.graph.reset();
+        }
       }
     }
-    this.graph.step();
-    this.editor.network.selectNodes(this.graph.getCurrentNode(),false);
+    else{
+      this.graph.step();
+      this.editor.network.selectNodes(this.graph.getCurrentNode(),false);
+    }
   }
 
   drawOutputValues(){
