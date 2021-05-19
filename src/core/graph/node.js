@@ -1,4 +1,4 @@
-import {NODE_TYPE} from '../constants/index';
+import {NODE_TYPE} from '../../constants/index';
 import uniqid from 'uniqid';
 
 export default class Node{

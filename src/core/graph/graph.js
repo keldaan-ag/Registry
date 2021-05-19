@@ -1,5 +1,5 @@
 import Node from './node';
-import {NODE_TYPE, EDGE_TYPE} from '../constants/index';
+import {NODE_TYPE, EDGE_TYPE} from '../../constants/index';
 import Edge from './edge';
 
 export default class Graph{
@@ -15,7 +15,7 @@ export default class Graph{
     }
 
     reset(){
-        this.currentId = this.start.id;
+        this.currentId = '';
     }
 
     addNode(type, box){
@@ -174,7 +174,7 @@ export default class Graph{
     }
 
     checkEnd(){
-        if(this.nodes.get(this.currentId).type == NODE_TYPE.END){
+        if(this.currentId != '' && this.nodes.get(this.currentId).type == NODE_TYPE.END){
             return true;
         }
         else{

@@ -1,10 +1,10 @@
 import './index.css';
-import {  Main } from './scenes';
+import {  Main } from './phaser/scenes/index';
 import {EDGE_TYPE, SCENE_MAIN, COLORS, PHASER_COLORS, IDS} from './constants/index';
 import "vis-network/styles/vis-network.css";
-import NetworkEditor from './network-editor';
-import Box from './Box';
-import Graph from './graph/graph';
+import NetworkEditor from './visjs/network-editor';
+import Box from './core/Box';
+import Graph from './core/graph/graph';
 
 class GameContainer{
     constructor(inputValues, rule){
@@ -175,15 +175,21 @@ class GameContainer{
   }
 
   step(){
-    this.graph.step();
     if(this.graph.checkEnd()){
-      this.outputValues.push(this.boxes.get('B').value);
-      this.drawOutputValues();
-      this.inputIndex += 1;
-      this.updateValues();
-      this.graph.reset();
+
+      if(this.outputValues.length <= this.inputValues.length){
+        this.outputValues.push(this.boxes.get('B').value);
+        this.drawOutputValues();
+        this.inputIndex += 1;
+        this.updateValues();
+        this.graph.reset();
+      }
+      else{
+
+      }
     }
-    this.editor.network.selectNodes(this.graph.getCurrentNode(),true);
+    this.graph.step();
+    this.editor.network.selectNodes(this.graph.getCurrentNode(),false);
   }
 
   drawOutputValues(){

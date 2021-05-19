@@ -1,4 +1,4 @@
-import {IDS, PHASER_COLORS, SCENE_MAIN} from '../constants/index';
+import {IDS, PHASER_COLORS, SCENE_MAIN} from '../../constants/index';
 import {Box} from '../gameObjects/index';
 
 class Main extends Phaser.Scene {

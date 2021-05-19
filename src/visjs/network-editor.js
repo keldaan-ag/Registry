@@ -87,6 +87,7 @@ class NetworkEditor{
                 shape:'circle',
                 font: '12px Verdana #ffffff',
                 shadow: true,
+                borderWidthSelected: 10
             }
         };
 
@@ -94,7 +95,7 @@ class NetworkEditor{
     }
 
     reset(startId){
-        this.network.selectNodes([startId], true);
+        this.network.selectNodes([startId], false);
     }
 }   
 

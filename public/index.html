@@ -7,7 +7,7 @@
     <meta name="theme-color" content="#000000" />
     <meta name="description" content="Web game created using phaser-template" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-
+    <script src="//cdn.jsdelivr.net/npm/phaser@%WEB_APP_PHASER_VERSION%/dist/phaser.min.js"></script>
     <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
@@ -17,66 +17,7 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>Phaser Template | remarkablegames</title>
+    <title>Registry game</title>
   </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <!--
-      Phaser. See https://phaser.io/
-    -->
-    <script src="//cdn.jsdelivr.net/npm/phaser@%WEB_APP_PHASER_VERSION%/dist/phaser.min.js"></script>
-
-    <div style="display:flex;">
-      <div id="editor-panel" style="display:flex; flex-flow: column; justify-content: space-around;">
-        <select name="node-configuration" id="node-configuration"></select>
-        <select name="node-type" id="node-type">
-          <option value="INCREMENT">+</option>
-          <option value="DECREMENT">-</option>
-        </select>
-        <button id="create-new-node">Create new node</button>
-        <select name="edge-type" id="edge-type">
-          <option value="NORMAL_EDGE">Normal</option>
-          <option value="IFZERO_EDGE">If Zero</option>
-        </select>
-        <button id="create-new-edge">Create new edge</button>
-        <button id="delete-selected">Delete selected</button>
-        <button id="create-box">Create box</button>
-        <button id="delete-box">Delete box</button>
-      </div>
-      <div id="mynetwork"></div>
-      <div id="phaser-canvas"></div>
-      <div style="border: 1px solid lightgray; width: 80px;">
-        <h4>Input</h4>
-        <div id="input-values" style="display: flex; justify-content: space-between; flex-flow: column;">
-        </div>
-      </div>
-      <div style="border: 1px solid lightgray; width: 80px;">
-        <h4>Output</h4>
-        <div id="output-values" style="display: flex; justify-content: space-between; flex-flow: column;">
-        </div>
-      </div>
-      <div style="border: 1px solid lightgray; width: 80px;">
-        <h4>Correct</h4>
-        <div id="correct-values" style="display: flex; justify-content: space-between; flex-flow: column;">
-        </div>
-      </div>
-    </div>
-    <div id="simulation-panel">
-      <button id = "start-simulation">Start</button>
-      <button id = "stop-simulation" disabled="true">Stop</button>
-      <button id ="step" disabled="true">Step</button>
-    </div>
-
-
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
   </body>
 </html>
