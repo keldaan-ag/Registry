@@ -7,11 +7,7 @@ import Box from './core/Box';
 import Graph from './core/graph/graph';
 
 class GameContainer{
-    constructor(inputValues, rule){
-      let self = this;
-        /**
-     * https://photonstorm.github.io/phaser3-docs/Phaser.Types.Core.html#.GameConfig
-     */
+    constructor(rule){
     const config = {
         width: 800,
         height: 800,
@@ -32,11 +28,13 @@ class GameContainer{
       this.boxes.set(box.id, box);
     }
     
-    this.inputValues = inputValues;
-    this.rule = rule;
+    this.inputValues = [];
     this.correctValues = [];
     this.outputValues = [];
-    this.computeCorrectValues();
+
+    this.rule = rule;
+
+    this.computeValues();
     this.fillBoxWithInputValues();
 
     this.graph = new Graph(this);
@@ -45,6 +43,7 @@ class GameContainer{
     this.editor = new NetworkEditor(this, this.graph.start.id, this.graph.end.id);
     this.simulation = false;
     this.inputIndex = 0;
+    this.success = false;
     
 
     this.fillHTMLSelect();
@@ -78,43 +77,49 @@ class GameContainer{
   }
 
   initListeners(){
-      let self = this;
       document.getElementById('create-new-node').addEventListener('click',(e)=>{
-        self.editor.network.addNodeMode();
+        this.editor.network.addNodeMode();
       });
       document.getElementById('create-new-edge').addEventListener('click',(e)=>{
-          self.editor.network.addEdgeMode();
+        this.editor.network.addEdgeMode();
       });
       document.getElementById('delete-selected').addEventListener('click',(e)=>{
-        let selection = self.editor.network.getSelection();
+        let selection = this.editor.network.getSelection();
         if(selection.edges.length != 0 || selection.nodes.length != 0){
-          self.editor.network.deleteSelected();
+          this.editor.network.deleteSelected();
         }
-        self.editor.network.setSelection({nodes:[],edges:[]});
+        this.editor.network.setSelection({nodes:[],edges:[]});
       });
       document.getElementById('create-box').addEventListener('click',(e)=>{
         if(this.boxes.size <9){
-          self.createBox();
+          this.createBox();
         }
       });
       document.getElementById('delete-box').addEventListener('click',(e)=>{
         if(this.boxes.size >2){
-          self.deleteBox();
+          this.deleteBox();
         }
       });
       document.getElementById('step').addEventListener('click', e=>{
-        self.step();
+        this.step();
       });
       document.getElementById('start-simulation').addEventListener('click', e=>{
-        self.startSimulationMode();
+        this.startSimulationMode();
       });
       document.getElementById('stop-simulation').addEventListener('click', e=>{
-        self.startEditMode();
+        this.startEditMode();
       });
       document.getElementById('phaser-canvas').addEventListener('ready', e=>{
-        self.boxes.forEach(box =>{
+        this.boxes.forEach(box =>{
           this.display.scene.getScene(SCENE_MAIN).addBox(box.id, box.phaserColor, box.value);
         });
+      });
+      document.getElementById('lobby-button').addEventListener('click',e =>{
+        this.display.destroy(true);
+        window.dispatchEvent(new CustomEvent('render-lobby'));
+      });
+      document.getElementById('close-button').addEventListener('click',e =>{
+        $("#myModal").modal('hide');
       });
   }
 
@@ -174,6 +179,18 @@ class GameContainer{
     callback(edgeData);
   }
 
+  checkSuccess(){
+    let check = true;
+    this.outputValues.forEach((value, index)=>{
+      if(value != this.correctValues[index]){
+        check = false;
+      }
+    });
+    if(check){
+      this.success = true;
+    }
+  }
+
   step(){
     if(this.graph.checkEnd()){
 
@@ -181,6 +198,8 @@ class GameContainer{
         this.outputValues.push(this.boxes.get('B').value);
         this.drawOutputValues();
         if(this.outputValues.length == this.inputValues.length){
+          this.checkSuccess();
+          this.showResults();
           this.startEditMode();
         }
         else{
@@ -280,7 +299,12 @@ class GameContainer{
     });
   }
 
-  computeCorrectValues(){
+  computeValues(){
+
+    for (let i = 0; i < 10; i++) {
+      this.inputValues.push(parseInt(Math.random() * 30));
+    }
+
     this.inputValues.forEach(value =>{
       this.correctValues.push(this.rule(value));
     });
@@ -301,7 +325,61 @@ class GameContainer{
     this.editor.network.deleteSelected();
     this.boxes.delete(IDS[this.boxes.size - 1]);
     this.fillHTMLSelect();
+  }
 
+  showResults(){
+    if(this.success){
+      document.getElementById('modal-title').textContent = 'Congratulations !';
+    }
+    else{
+      document.getElementById('modal-title').textContent = 'Failure !';
+    }
+
+    document.getElementById('modal-body').innerHTML = '';
+    let tableResults = document.createElement('table');
+    let theadResults = document.createElement('thead');
+    let trTitle = document.createElement('tr');
+    let thInput = document.createElement('td');
+    thInput.textContent = 'Input';
+    let thOutput = document.createElement('td');
+    thOutput.textContent = 'Output';
+    let thCorrect = document.createElement('td');
+    thCorrect.textContent = 'Correct';
+    trTitle.appendChild(thInput);
+    trTitle.appendChild(thOutput);
+    trTitle.appendChild(thCorrect);
+    theadResults.appendChild(trTitle);
+    tableResults.appendChild(theadResults);
+    let tbodyResults = document.createElement('tbody');
+
+    this.inputValues.forEach((value, index)=>{
+      let trResult = document.createElement('tr');
+
+      let tdInputResult = document.createElement('td');
+      tdInputResult.textContent = value;
+      
+      let tdOutputResult = document.createElement('td');
+      tdOutputResult.textContent = this.outputValues[index];
+
+      if(this.outputValues[index] == this.correctValues[index]){
+        tdOutputResult.style.background = "#ccffcc";
+      }
+      else{
+        tdOutputResult.style.background =  "#ffcccc";
+      }
+
+      let tdCorrectResult = document.createElement('td');
+      tdCorrectResult.textContent = this.correctValues[index];
+
+      trResult.appendChild(tdInputResult);
+      trResult.appendChild(tdOutputResult);
+      trResult.appendChild(tdCorrectResult);
+      tbodyResults.appendChild(trResult);
+    });
+
+    tableResults.appendChild(tbodyResults);
+    document.getElementById('modal-body').appendChild(tableResults);
+    $("#myModal").modal();
   }
 }
 

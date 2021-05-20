@@ -5,9 +5,8 @@ class GamePage {
     this.render();
     this.level = args.level;
     this.container = document.getElementById('game');
-    let testValues = [1,2,3,4,5];
     let rule = (a)=>{return a * 2};
-    this.game = new GameContainer(testValues, rule);
+    this.game = new GameContainer(rule);
   };
 
 
@@ -16,21 +15,20 @@ class GamePage {
     content.setAttribute('id', 'game');
     content.innerHTML = 
     `
-    <div class="modal" tabindex="-1" role="dialog">
+    <div id="myModal" class="modal" tabindex="-1" role="dialog">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Modal title</h5>
+            <h5 id="modal-title" class="modal-title">Modal title</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body">
-            <p>Modal body text goes here.</p>
+          <div id="modal-body" class="modal-body">
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary">Save changes</button>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button id="lobby-button" type="button" class="btn btn-primary" data-dismiss="modal">Main Menu</button>
+            <button type="button" id="close-button" class="btn btn-secondary">Retry</button>
           </div>
         </div>
       </div>
@@ -42,38 +40,38 @@ class GamePage {
           <option value="INCREMENT">+</option>
           <option value="DECREMENT">-</option>
         </select>
-        <button id="create-new-node">Create new node</button>
+        <button type="button" class="btn"  id="create-new-node">Create new node</button>
         <select name="edge-type" id="edge-type">
           <option value="NORMAL_EDGE">Normal</option>
           <option value="IFZERO_EDGE">If Zero</option>
         </select>
-        <button id="create-new-edge">Create new edge</button>
-        <button id="delete-selected">Delete selected</button>
-        <button id="create-box">Create box</button>
-        <button id="delete-box">Delete box</button>
+        <button type="button" class="btn"  id="create-new-edge">Create new edge</button>
+        <button type="button" class="btn"  id="delete-selected">Delete selected</button>
+        <button type="button" class="btn"  id="create-box">Create box</button>
+        <button type="button" class="btn"  id="delete-box">Delete box</button>
       </div>
       <div id="mynetwork"></div>
       <div id="phaser-canvas"></div>
       <div style="border: 1px solid lightgray; width: 80px;">
-        <h4>Input</h4>
+        <p>Input</p>
         <div id="input-values" style="display: flex; justify-content: space-between; flex-flow: column;">
         </div>
       </div>
       <div style="border: 1px solid lightgray; width: 80px;">
-        <h4>Output</h4>
+        <p>Output</p>
         <div id="output-values" style="display: flex; justify-content: space-between; flex-flow: column;">
         </div>
       </div>
       <div style="border: 1px solid lightgray; width: 80px;">
-        <h4>Correct</h4>
+        <p>Correct</p>
         <div id="correct-values" style="display: flex; justify-content: space-between; flex-flow: column;">
         </div>
       </div>
     </div>
     <div id="simulation-panel">
-      <button id = "start-simulation">Start</button>
-      <button id = "stop-simulation" disabled="true">Stop</button>
-      <button id ="step" disabled="true">Step</button>
+      <button type="button" class="btn"  id = "start-simulation">Start</button>
+      <button type="button" class="btn"  id = "stop-simulation" disabled="true">Stop</button>
+      <button type="button" class="btn"  id ="step" disabled="true">Step</button>
     </div>
     `;
     document.body.innerHTML = '';

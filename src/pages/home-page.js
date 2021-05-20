@@ -7,7 +7,7 @@ class HomePage {
   render() {
     const content = document.createElement('div');
     content.setAttribute('id', 'home');
-    content.innerHTML = `<button id='play-button'>Play</button>`;
+    content.innerHTML = `<button type="button" class="btn"  id='play-button'>Play</button>`;
     document.body.innerHTML = '';
     document.body.appendChild(content);
   }

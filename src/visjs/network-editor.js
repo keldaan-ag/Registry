@@ -14,34 +14,47 @@ class NetworkEditor{
             label: "Start",
             color: {
                 background:'#ffffff',
+                border:'#000000',
                 highlight: {
-                    background: '#D2E5FF'
+                    border: '#000000',
+                    background: '#ffffff'
                   },
+                  hover: {
+                    border: '#000000',
+                    background: '#ffffff'
+                  }
                 },
-            font: '12px Verdana #000000',
+            font: '20px Verdana #000000',
             fixed: {
                 x:true,
                 y:true
             },
             x: 0,
-            y: 0
+            y: 0,
+            size: 50
         },
             {
                 id: endId,
                 label: "End",
                 color: {
-                    background:'#000000',
+                    background:'#ffffff',
+                    border:'#000000',
                     highlight: {
-                        background: '#D2E5FF'
+                        border: '#000000',
+                        background: '#ffffff'
                       },
+                      hover: {
+                        border: '#000000',
+                        background: '#ffffff'
+                      }
                     },
-                font: '12px Verdana #ffffff',
+                font: '20px Verdana #000000',
                 fixed: {
                     x:true,
                     y:true
                 },
-                x: 500,
-                y: 500
+                x: 600,
+                y: 600
             }
         ]);
 
@@ -95,9 +108,9 @@ class NetworkEditor{
             },
             nodes:{
                 shape:'circle',
-                font: '12px Verdana #ffffff',
+                font: '15px Verdana #ffffff',
                 shadow: true,
-                borderWidthSelected: 10
+                borderWidthSelected: 10,
             }
         };
 
