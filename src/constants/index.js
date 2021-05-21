@@ -22,75 +22,115 @@ export const EDGE_TYPE = {
     IFZERO_EDGE: 'IFZERO_EDGE'
 };
 
-export const COLORS = 
-['#e6194B'
-, '#3cb44b'
-, '#ffe119'
-, '#4363d8'
-, '#f58231'
-, '#911eb4'
-, '#42d4f4'
-, '#f032e6'
-, '#bfef45'
-, '#fabed4'
-, '#469990'
-, '#dcbeff'
-, '#9A6324'
-, '#fffac8'
-, '#800000'
-, '#aaffc3'
-, '#808000'
-, '#ffd8b1'
-, '#000075'
-, '#a9a9a9'
-, '#ffffff'
-, '#000000'];
 
-export const PHASER_COLORS = 
-[0xe6194B
-, 0x3cb44b
-, 0xffe119
-, 0x4363d8
-, 0xf58231
-, 0x911eb4
-, 0x42d4f4
-, 0xf032e6
-, 0xbfef45
-, 0xfabed4
-, 0x469990
-, 0xdcbeff
-, 0x9A6324
-, 0xfffac8
-, 0x800000
-, 0xaaffc3
-, 0x808000
-, 0xffd8b1
-, 0x000075
-, 0xa9a9a9
-, 0xffffff
-, 0x000000];
+export const BOX_CONFIG = {
+    A:{
+        id: 'A',
+        color: '#e6194B',
+        phaserColor: 0xe6194B
+    },
+    B:{
+        id: 'B',
+        color: '#3cb44b',
+        phaserColor: 0x3cb44b
+    },
+    C:{
+        id: 'C',
+        color: '#ffe119',
+        phaserColor: 0xffe119
+    },
+    D:{
+        id: 'D',
+        color: '#4363d8',
+        phaserColor: 0x4363d8
+    },
+    E:{
+        id: 'E',
+        color: '#f58231',
+        phaserColor: 0xf58231
+    },
+    F:{
+        id: 'F',
+        color: '#911eb4',
+        phaserColor: 0x911eb4
+    },
+    G:{
+        id: 'G',
+        color: '#42d4f4',
+        phaserColor: 0x42d4f4
+    },
+    H:{
+        id: 'H',
+        color: '#f032e6',
+        phaserColor: 0xf032e6
+    },
+    I:{
+        id: 'I',
+        color: '#bfef45',
+        phaserColor: 0xbfef45
+    },
+    J:{
+        id: 'J',
+        color: '#fabed4',
+        phaserColor: 0xfabed4
+    },
+    K:{
+        id: 'K',
+        color: '#469990',
+        phaserColor: 0x469990
+    },
+    L:{
+        id: 'L',
+        color: '#dcbeff',
+        phaserColor: 0xdcbeff
+    },
+    M:{
+        id: 'M',
+        color: '#9A6324',
+        phaserColor: 0x9A6324
+    },
+    N:{
+        id: 'N',
+        color: '#fffac8',
+        phaserColor: 0xfffac8
+    },
+    O:{
+        id: 'O',
+        color: '#800000',
+        phaserColor: 0x800000
+    },
+    P:{
+        id: 'P',
+        color: '#aaffc3',
+        phaserColor: 0xaaffc3
+    },
+    Q:{
+        id: 'Q',
+        color: '#808000',
+        phaserColor: 0x808000
+    },
+    R:{
+        id: 'R',
+        color: '#ffd8b1',
+        phaserColor: 0xffd8b1
+    },
+    S:{
+        id: 'S',
+        color: '#000075',
+        phaserColor: 0x000075
+    },
+    T:{
+        id: 'T',
+        color: '#a9a9a9',
+        phaserColor: 0xa9a9a9
+    }
+};
 
-export const IDS = 
+export const LEVEL_CONFIG =
 [
-'A'
-, 'B'
-, 'C'
-, 'D'
-, 'E'
-, 'F'
-, 'G'
-, 'H'
-, 'I'
-, 'J'
-, 'K'
-, 'L'
-, 'M'
-, 'N'
-, 'O'
-, 'P'
-, 'Q'
-, 'R'
-, 'S'
-, 'T'
-, 'U'
-, 'V'];
+    {
+        rule: (a)=>{return a * 2},
+        title: 'B=2*A',
+        description: 'I want an answer that puts the double of A in B'
+    }
+];

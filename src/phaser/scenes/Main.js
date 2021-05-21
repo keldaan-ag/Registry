@@ -1,4 +1,4 @@
-import {IDS, PHASER_COLORS, SCENE_MAIN} from '../../constants/index';
+import {SCENE_MAIN} from '../../constants/index';
 import {Box} from '../gameObjects/index';
 
 class Main extends Phaser.Scene {
@@ -24,7 +24,7 @@ class Main extends Phaser.Scene {
 
   deleteBox(id){
     this.boxes.getChildren().forEach(box =>{
-      if(box.id == id){
+      if(box.id === id){
         box.destroy(true);
       }
     });

@@ -25,7 +25,7 @@ export default class Graph{
     }
 
     addEdge(type, from, to){
-        if(this.nodes.get(to).type == NODE_TYPE.START){
+        if(this.nodes.get(to).type === NODE_TYPE.START){
             return;
         }
         else{
@@ -35,7 +35,7 @@ export default class Graph{
             let edge;
             switch (fromNodeType) {
                 case NODE_TYPE.START:
-                    if(fromNodeEdges.size > 0 || type != EDGE_TYPE.NORMAL_EDGE){
+                    if(fromNodeEdges.size > 0 || type !== EDGE_TYPE.NORMAL_EDGE){
                         // only one normal edge allowed from start
                         break;
                     }
@@ -50,7 +50,7 @@ export default class Graph{
                 
                 case NODE_TYPE.INCREMENT:
                     // only one normal link allowed from increment link
-                    if(type == EDGE_TYPE.IFZERO_EDGE || fromNodeEdges.size > 0){
+                    if(type === EDGE_TYPE.IFZERO_EDGE || fromNodeEdges.size > 0){
                         break;
                     }
                     else{
@@ -67,7 +67,7 @@ export default class Graph{
                     
                     let isAlreadyEdge = false;
                     this.edges.forEach(edge =>{
-                        if(edge.from == from && edge.type == type){
+                        if(edge.from === from && edge.type === type){
                             isAlreadyEdge = true;
                         }
                     });
@@ -77,6 +77,7 @@ export default class Graph{
                     }
                     else{
                         edge = new Edge(from, to, type);
+                        break;
                     }
     
                 default:
@@ -91,13 +92,13 @@ export default class Graph{
     }
 
     deleteNode(id){
-        if(this.nodes.get(id).type == NODE_TYPE.START || this.nodes.get(id).type == NODE_TYPE.END){
+        if(this.nodes.get(id).type === NODE_TYPE.START || this.nodes.get(id).type === NODE_TYPE.END){
             return false;
         }
         else{
             let edgesIdsToDelete = [];
             this.edges.forEach(edge =>{
-                if(edge.from == id || edge.to == id){
+                if(edge.from === id || edge.to === id){
                     edgesIdsToDelete.push(edge.id);
                 }
             });
@@ -116,7 +117,7 @@ export default class Graph{
     }
 
     step(){
-        if(this.currentId == ''){
+        if(this.currentId === ''){
             this.currentId = this.start.id;
         }
         else{
@@ -131,9 +132,9 @@ export default class Graph{
                     break;
 
                 case NODE_TYPE.DECREMENT:
-                    if(this.parent.boxes.get(currentNode.box).value == 0){
+                    if(this.parent.boxes.get(currentNode.box).value === 0){
                         currentNode.fromEdges.forEach(id =>{
-                            if(this.edges.get(id).type == EDGE_TYPE.IFZERO_EDGE){
+                            if(this.edges.get(id).type === EDGE_TYPE.IFZERO_EDGE){
                                 this.currentId = this.edges.get(id).to;
                             }
                         });
@@ -141,7 +142,7 @@ export default class Graph{
                     else{
                         this.parent.decrementBox(currentNode.box);
                         currentNode.fromEdges.forEach(id =>{
-                            if(this.edges.get(id).type == EDGE_TYPE.NORMAL_EDGE){
+                            if(this.edges.get(id).type === EDGE_TYPE.NORMAL_EDGE){
                                 this.currentId = this.edges.get(id).to;
                             }
                         });
@@ -166,7 +167,7 @@ export default class Graph{
     deleteNodesWithBox(boxId){
         let idsToDelete = [];
         this.nodes.forEach(node =>{
-            if(node.box == boxId){
+            if(node.box === boxId){
                 idsToDelete.push(node.id);
             }
         });
@@ -174,7 +175,7 @@ export default class Graph{
     }
 
     checkEnd(){
-        if(this.currentId != '' && this.nodes.get(this.currentId).type == NODE_TYPE.END){
+        if(this.currentId !== '' && this.nodes.get(this.currentId).type === NODE_TYPE.END){
             return true;
         }
         else{

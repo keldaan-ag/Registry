@@ -1,12 +1,16 @@
 import GameContainer from '../game-container';
+import {LEVEL_CONFIG} from '../constants/index';
 
 class GamePage {
   constructor(args) {
-    this.render();
+
     this.level = args.level;
+    this.rule = LEVEL_CONFIG[0].rule;
+    this.title = LEVEL_CONFIG[0].title;
+    this.description = LEVEL_CONFIG[0].description;
+    this.render();
     this.container = document.getElementById('game');
-    let rule = (a)=>{return a * 2};
-    this.game = new GameContainer(rule);
+    this.game = new GameContainer(this.rule);
   };
 
 
@@ -34,7 +38,12 @@ class GamePage {
       </div>
     </div>
     <div style="display:flex;">
-      <div id="editor-panel" style="display:flex; flex-flow: column; justify-content: space-around;">
+      <div id="editor-panel">
+        <button id="main-menu" type="button" class="btn">Main Menu</button>
+        <span>
+          <h4 id="level-title" style="text-align:center;">${this.title}</h4>
+          <h4 id="level-description" style="text-align:center;">${this.description}</h4>
+        </span>
         <select name="node-configuration" id="node-configuration"></select>
         <select name="node-type" id="node-type">
           <option value="INCREMENT">+</option>
@@ -60,11 +69,6 @@ class GamePage {
       <div style="border: 1px solid lightgray; width: 80px;">
         <p>Output</p>
         <div id="output-values" style="display: flex; justify-content: space-between; flex-flow: column;">
-        </div>
-      </div>
-      <div style="border: 1px solid lightgray; width: 80px;">
-        <p>Correct</p>
-        <div id="correct-values" style="display: flex; justify-content: space-between; flex-flow: column;">
         </div>
       </div>
     </div>

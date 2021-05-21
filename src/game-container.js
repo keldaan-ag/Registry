@@ -1,6 +1,6 @@
 import './index.css';
 import {  Main } from './phaser/scenes/index';
-import {EDGE_TYPE, SCENE_MAIN, COLORS, PHASER_COLORS, IDS} from './constants/index';
+import {EDGE_TYPE, SCENE_MAIN, BOX_CONFIG} from './constants/index';
 import "vis-network/styles/vis-network.css";
 import NetworkEditor from './visjs/network-editor';
 import Box from './core/Box';
@@ -22,9 +22,10 @@ class GameContainer{
     };
 
     this.boxes = new Map();
-    
+    let keys = Object.keys(BOX_CONFIG);
+
     for (let i = 0; i < 2; i++) {
-      let box = new Box(IDS[i], COLORS[i],PHASER_COLORS[i]);
+      let box = new Box(BOX_CONFIG[keys[i]].id, BOX_CONFIG[keys[i]].color, BOX_CONFIG[keys[i]].phaserColor);
       this.boxes.set(box.id, box);
     }
     
@@ -58,11 +59,6 @@ class GameContainer{
       valHTML.textContent = val;
       document.getElementById('input-values').appendChild(valHTML);
     });
-    this.correctValues.forEach(val =>{
-      let valHTML = document.createElement('p');
-      valHTML.textContent = val;
-      document.getElementById('correct-values').appendChild(valHTML);
-    });
   }
 
   fillHTMLSelect(){
@@ -85,7 +81,7 @@ class GameContainer{
       });
       document.getElementById('delete-selected').addEventListener('click',(e)=>{
         let selection = this.editor.network.getSelection();
-        if(selection.edges.length != 0 || selection.nodes.length != 0){
+        if(selection.edges.length !== 0 || selection.nodes.length !== 0){
           this.editor.network.deleteSelected();
         }
         this.editor.network.setSelection({nodes:[],edges:[]});
@@ -121,6 +117,10 @@ class GameContainer{
       document.getElementById('close-button').addEventListener('click',e =>{
         $("#myModal").modal('hide');
       });
+      document.getElementById('main-menu').addEventListener('click',e=>{
+        this.display.destroy(true);
+        window.dispatchEvent(new CustomEvent('render-lobby'));
+      });
   }
 
   addEdge(edgeData,callback){
@@ -133,7 +133,7 @@ class GameContainer{
           let edge = this.graph.addEdge(type, edgeData.from, edgeData.to);
           if(edge){
             edgeData.id = edge.id;
-            edgeData.dashes = type == EDGE_TYPE.NORMAL_EDGE ? false : true;
+            edgeData.dashes = type === EDGE_TYPE.NORMAL_EDGE ? false : true;
             callback(edgeData);
           }
       }
@@ -182,7 +182,7 @@ class GameContainer{
   checkSuccess(){
     let check = true;
     this.outputValues.forEach((value, index)=>{
-      if(value != this.correctValues[index]){
+      if(value !== this.correctValues[index]){
         check = false;
       }
     });
@@ -197,7 +197,7 @@ class GameContainer{
       if(this.outputValues.length < this.inputValues.length){
         this.outputValues.push(this.boxes.get('B').value);
         this.drawOutputValues();
-        if(this.outputValues.length == this.inputValues.length){
+        if(this.outputValues.length === this.inputValues.length){
           this.checkSuccess();
           this.showResults();
           this.startEditMode();
@@ -217,9 +217,15 @@ class GameContainer{
 
   drawOutputValues(){
     document.getElementById('output-values').innerHTML = '';
-    this.outputValues.forEach(val =>{
+    this.outputValues.forEach((val,index) =>{
       let valHTML = document.createElement('p');
       valHTML.textContent = val;
+      if(this.correctValues[index] == this.outputValues[index]){
+        valHTML.style.background = '#ccfffcc';
+      }
+      else{
+        valHTML.style.background = '#ffcccc';
+      }
       document.getElementById('output-values').appendChild(valHTML);
     });
   }
@@ -227,7 +233,7 @@ class GameContainer{
   incrementBox(boxId){
     this.boxes.get(boxId).value += 1;
     this.display.scene.getScene(SCENE_MAIN).boxes.getChildren().forEach(child =>{
-      if(boxId == child.id){
+      if(boxId === child.id){
         child.increment();
       }
     });
@@ -281,7 +287,7 @@ class GameContainer{
   
   fillBoxWithInputValues(){
     this.boxes.forEach(box=>{
-      if(box.id == 'A'){
+      if(box.id === 'A'){
         box.value = this.inputValues[this.inputIndex];
       }
       else{
@@ -293,7 +299,7 @@ class GameContainer{
   decrementBox(boxId){
     this.boxes.get(boxId).value -= 1;
     this.display.scene.getScene(SCENE_MAIN).boxes.getChildren().forEach(child =>{
-      if(boxId == child.id){
+      if(boxId === child.id){
         child.decrement();
       }
     });
@@ -311,19 +317,21 @@ class GameContainer{
   }
 
   createBox(){
-    let box = new Box(IDS[this.boxes.size], COLORS[this.boxes.size], PHASER_COLORS[this.boxes.size]);
+    let keys = Object.keys(BOX_CONFIG);
+    let box = new Box(BOX_CONFIG[keys[this.boxes.size]].id, BOX_CONFIG[keys[this.boxes.size]].color, BOX_CONFIG[keys[this.boxes.size]].phaserColor);
     this.boxes.set(box.id, box);
     this.display.scene.getScene(SCENE_MAIN).addBox(box.id, box.phaserColor, box.value);
     this.fillHTMLSelect();
   }
 
   deleteBox(){
-    let idToDelete = IDS[this.boxes.size - 1];
+    let keys = Object.keys(BOX_CONFIG);
+    let idToDelete = BOX_CONFIG[keys[this.boxes.size - 1]].id;
     this.display.scene.getScene(SCENE_MAIN).deleteBox(idToDelete);
     this.editor.network.unselectAll();
     this.editor.network.selectNodes(this.graph.deleteNodesWithBox(idToDelete));
     this.editor.network.deleteSelected();
-    this.boxes.delete(IDS[this.boxes.size - 1]);
+    this.boxes.delete(BOX_CONFIG[keys[this.boxes.size - 1]].id);
     this.fillHTMLSelect();
   }
 
@@ -361,7 +369,7 @@ class GameContainer{
       let tdOutputResult = document.createElement('td');
       tdOutputResult.textContent = this.outputValues[index];
 
-      if(this.outputValues[index] == this.correctValues[index]){
+      if(this.outputValues[index] === this.correctValues[index]){
         tdOutputResult.style.background = "#ccffcc";
       }
       else{

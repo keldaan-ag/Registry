@@ -20,7 +20,8 @@ export default class Node{
             
             case NODE_TYPE.DECREMENT:
                 this.symbol = '-';
-        
+                break;
+                
             default:
                 break;
         }

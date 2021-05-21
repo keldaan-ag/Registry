@@ -33,3 +33,10 @@ a {
 .github-corner:hover > svg {
   opacity: 1;
 }
+
+#editor-panel{
+  display:flex;
+  flex-flow: column;
+  justify-content: space-around;
+  width: 10%;
+}
