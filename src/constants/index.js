@@ -129,8 +129,31 @@ export const BOX_CONFIG = {
 export const LEVEL_CONFIG =
 [
     {
-        rule: (a)=>{return a * 2},
-        title: 'B=2*A',
-        description: 'I want an answer that puts the double of A in B'
+        rule: (input)=>{return input[0]},
+        title: 'Transfer (B = A)',
+        description: 'I want an answer that puts A in B',
+        inputBoxes: ['A'],
+        outputBox: 'B'
+    },
+    {
+        rule: (input)=>{return input[0] + 1},
+        title: 'Increment (B= A + 1)',
+        description: 'I want an answer that puts A + 1 in B',
+        inputBoxes: ['A'],
+        outputBox: 'B'
+    },
+    {
+        rule: (input)=>{return input[0] * 2},
+        title: 'Doublification (B= 2 * A)',
+        description: 'I want an answer that puts the double of A in B',
+        inputBoxes: ['A'],
+        outputBox: 'B'
+    },
+    {
+        rule: (input)=>{return input[0] * input[1]},
+        title: 'Multiplication (C= B * A)',
+        description: 'I want an answer that puts B * A in C',
+        inputBoxes: ['A','B'],
+        outputBox: 'C'
     }
 ];

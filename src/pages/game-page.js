@@ -5,12 +5,14 @@ class GamePage {
   constructor(args) {
 
     this.level = args.level;
-    this.rule = LEVEL_CONFIG[0].rule;
-    this.title = LEVEL_CONFIG[0].title;
-    this.description = LEVEL_CONFIG[0].description;
+    this.rule = LEVEL_CONFIG[this.level - 1].rule;
+    this.title = LEVEL_CONFIG[this.level - 1].title;
+    this.description = LEVEL_CONFIG[this.level - 1].description;
+    this.inputBoxes = LEVEL_CONFIG[this.level - 1].inputBoxes;
+    this.outputBox = LEVEL_CONFIG[this.level - 1].outputBox;
     this.render();
     this.container = document.getElementById('game');
-    this.game = new GameContainer(this.rule);
+    this.game = new GameContainer(this.rule, this.title, this.description, this.inputBoxes, this.outputBox);
   };
 
 
@@ -73,9 +75,10 @@ class GamePage {
       </div>
     </div>
     <div id="simulation-panel">
-      <button type="button" class="btn"  id = "start-simulation">Start</button>
       <button type="button" class="btn"  id = "stop-simulation" disabled="true">Stop</button>
-      <button type="button" class="btn"  id ="step" disabled="true">Step</button>
+      <button type="button" class="btn"  id = "start-simulation">Start</button>
+      <input type="range" class="form-range" id="simulation-speed" min="1" max="30"/>
+      <button type="button" class="btn"  id ="step">Step</button>
     </div>
     `;
     document.body.innerHTML = '';

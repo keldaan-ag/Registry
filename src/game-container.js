@@ -7,7 +7,20 @@ import Box from './core/Box';
 import Graph from './core/graph/graph';
 
 class GameContainer{
-    constructor(rule){
+    constructor(rule, title, description, inputBoxes, outputBox){
+
+    this.rule = rule;
+    this.title = title;
+    this.description = description;
+    this.inputBoxes = inputBoxes;
+    this.outputBox = outputBox;
+    this.inputIndex = 0;
+    this.simulation = false;
+    this.success = false;
+    this.inputValues = [];
+    this.correctValues = [];
+    this.outputValues = [];
+
     const config = {
         width: 800,
         height: 800,
@@ -21,32 +34,21 @@ class GameContainer{
         backgroundColor: '#fff'
     };
 
-    this.boxes = new Map();
-    let keys = Object.keys(BOX_CONFIG);
-
-    for (let i = 0; i < 2; i++) {
-      let box = new Box(BOX_CONFIG[keys[i]].id, BOX_CONFIG[keys[i]].color, BOX_CONFIG[keys[i]].phaserColor);
-      this.boxes.set(box.id, box);
-    }
-    
-    this.inputValues = [];
-    this.correctValues = [];
-    this.outputValues = [];
-
-    this.rule = rule;
-
-    this.computeValues();
-    this.fillBoxWithInputValues();
-
     this.graph = new Graph(this);
     this.display = new Phaser.Game(config);
     this.display.parent = this;
     this.editor = new NetworkEditor(this, this.graph.start.id, this.graph.end.id);
-    this.simulation = false;
-    this.inputIndex = 0;
-    this.success = false;
-    
 
+    this.boxes = new Map();
+    let keys = Object.keys(BOX_CONFIG);
+
+    for (let i = 0; i < this.inputBoxes.length + 1; i++) {
+      let box = new Box(BOX_CONFIG[keys[i]].id, BOX_CONFIG[keys[i]].color, BOX_CONFIG[keys[i]].phaserColor);
+      this.boxes.set(box.id, box);
+    }
+
+    this.computeValues();
+    this.fillBoxWithInputValues();
     this.fillHTMLSelect();
     this.initListeners();
     this.startEditMode();
@@ -97,10 +99,18 @@ class GameContainer{
         }
       });
       document.getElementById('step').addEventListener('click', e=>{
+        if(this.interval){
+          clearInterval(this.interval);
+        }
         this.step();
       });
       document.getElementById('start-simulation').addEventListener('click', e=>{
-        this.startSimulationMode();
+        if(this.simulation){
+          this.startInterval();
+        }
+        else{
+          this.startSimulationMode();
+        }
       });
       document.getElementById('stop-simulation').addEventListener('click', e=>{
         this.startEditMode();
@@ -195,7 +205,7 @@ class GameContainer{
     if(this.graph.checkEnd()){
 
       if(this.outputValues.length < this.inputValues.length){
-        this.outputValues.push(this.boxes.get('B').value);
+        this.outputValues.push(this.boxes.get(this.outputBox).value);
         this.drawOutputValues();
         if(this.outputValues.length === this.inputValues.length){
           this.checkSuccess();
@@ -220,8 +230,8 @@ class GameContainer{
     this.outputValues.forEach((val,index) =>{
       let valHTML = document.createElement('p');
       valHTML.textContent = val;
-      if(this.correctValues[index] == this.outputValues[index]){
-        valHTML.style.background = '#ccfffcc';
+      if(this.correctValues[index] === this.outputValues[index]){
+        valHTML.style.background = '#ccffcc';
       }
       else{
         valHTML.style.background = '#ffcccc';
@@ -244,14 +254,18 @@ class GameContainer{
     this.reset();
     if(!this.simulation){
       this.simulation = true;
+      this.startInterval();
       document.getElementById('editor-panel').childNodes.forEach(node =>{
         node.disabled = true;
       });
       document.getElementById('simulation-panel').childNodes.forEach(node =>{
         node.disabled = false;
       });
-      document.getElementById('start-simulation').disabled = true;
     }
+  }
+
+  startInterval(){
+    this.interval = setInterval(this.step.bind(this), 500);
   }
 
   startEditMode(){
@@ -270,6 +284,7 @@ class GameContainer{
   }
 
   reset(){
+    clearInterval(this.interval);
     this.inputIndex = 0;
     this.outputValues = [];
     this.drawOutputValues();
@@ -286,13 +301,16 @@ class GameContainer{
   }
   
   fillBoxWithInputValues(){
+
     this.boxes.forEach(box=>{
-      if(box.id === 'A'){
-        box.value = this.inputValues[this.inputIndex];
+      if(this.inputBoxes.indexOf(box.id) !== -1){
+        let index = this.inputBoxes.indexOf(box.id);
+        box.value = this.inputValues[this.inputIndex][index];
       }
       else{
         box.value = 0;
       }
+
     });
   }
 
@@ -308,7 +326,11 @@ class GameContainer{
   computeValues(){
 
     for (let i = 0; i < 10; i++) {
-      this.inputValues.push(parseInt(Math.random() * 30));
+      let value = [];
+      for (let j = 0; j < this.inputBoxes.length; j++) {
+        value.push(parseInt(Math.random() * 30));
+      }
+      this.inputValues.push(value);
     }
 
     this.inputValues.forEach(value =>{

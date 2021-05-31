@@ -27,7 +27,7 @@ class NetworkEditor{
             font: '20px Verdana #000000',
             fixed: {
                 x:true,
-                y:true
+                y:false
             },
             x: 0,
             y: 0,
@@ -51,7 +51,7 @@ class NetworkEditor{
                 font: '20px Verdana #000000',
                 fixed: {
                     x:true,
-                    y:true
+                    y:false
                 },
                 x: 600,
                 y: 600
@@ -111,7 +111,8 @@ class NetworkEditor{
                 font: '15px Verdana #ffffff',
                 shadow: true,
                 borderWidthSelected: 10,
-            }
+            },
+            physics: false
         };
 
         this.network = new Network(container, data, options);
