@@ -115,6 +115,12 @@ class GameContainer{
       document.getElementById('stop-simulation').addEventListener('click', e=>{
         this.startEditMode();
       });
+      document.getElementById('simulation-speed').addEventListener('input', e=>{
+        if(this.simulation && this.interval){
+          clearInterval(this.interval);
+          this.startInterval();
+        }
+      });
       document.getElementById('phaser-canvas').addEventListener('ready', e=>{
         this.boxes.forEach(box =>{
           this.display.scene.getScene(SCENE_MAIN).addBox(box.id, box.phaserColor, box.value);
@@ -240,15 +246,6 @@ class GameContainer{
     });
   }
 
-  incrementBox(boxId){
-    this.boxes.get(boxId).value += 1;
-    this.display.scene.getScene(SCENE_MAIN).boxes.getChildren().forEach(child =>{
-      if(boxId === child.id){
-        child.increment();
-      }
-    });
-  }
-
   startSimulationMode(){
 
     this.reset();
@@ -265,7 +262,7 @@ class GameContainer{
   }
 
   startInterval(){
-    this.interval = setInterval(this.step.bind(this), 500);
+    this.interval = setInterval(this.step.bind(this), 100 * document.getElementById('simulation-speed').value);
   }
 
   startEditMode(){
@@ -316,11 +313,12 @@ class GameContainer{
 
   decrementBox(boxId){
     this.boxes.get(boxId).value -= 1;
-    this.display.scene.getScene(SCENE_MAIN).boxes.getChildren().forEach(child =>{
-      if(boxId === child.id){
-        child.decrement();
-      }
-    });
+    this.display.scene.getScene(SCENE_MAIN).decrementBox(boxId);
+  }
+
+  incrementBox(boxId){
+    this.boxes.get(boxId).value += 1;
+    this.display.scene.getScene(SCENE_MAIN).incrementBox(boxId);
   }
 
   computeValues(){

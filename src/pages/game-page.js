@@ -77,7 +77,7 @@ class GamePage {
     <div id="simulation-panel">
       <button type="button" class="btn"  id = "stop-simulation" disabled="true">Stop</button>
       <button type="button" class="btn"  id = "start-simulation">Start</button>
-      <input type="range" class="form-range" id="simulation-speed" min="1" max="30"/>
+      <input type="range" class="form-range" id="simulation-speed" min="1" max="10"/>
       <button type="button" class="btn"  id ="step">Step</button>
     </div>
     `;
