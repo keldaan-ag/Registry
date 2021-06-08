@@ -262,7 +262,7 @@ class GameContainer{
   }
 
   startInterval(){
-    this.interval = setInterval(this.step.bind(this), 100 * document.getElementById('simulation-speed').value);
+    this.interval = setInterval(this.step.bind(this), 10 * (99 - document.getElementById('simulation-speed').value));
   }
 
   startEditMode(){
